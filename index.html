@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <h1>TMZ</h1>
+    <p><i>Tom White, November 2025</i></p>
+    <p>
+        <div id="container"></div>
+    </p>
+    <script type="text/javascript">
+      // https://gist.github.com/jaredwinick/5073432
+      // http://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
+      deinterleave = function (x) {
+        x = x & 0x55555555;
+        x = (x | (x >> 1)) & 0x33333333;
+        x = (x | (x >> 2)) & 0x0f0f0f0f;
+        x = (x | (x >> 4)) & 0x00ff00ff;
+        x = (x | (x >> 8)) & 0x0000ffff;
+        return x;
+      };
+      // go from z-order to (x, y) coordinates
+      let z = 6;
+      let x = deinterleave(z);
+      let y = deinterleave(z >> 1);
+      console.log(x + ", " + y);
+
+      
+
+      // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
+      const tm = [...Array(8)].reduce(a=>[...a,...a.map(i=>+!i)],[0]);
+      console.log(tm);
+
+      let data = [];
+      for (let i = 0; i < tm.length; i++) {
+        let z = i;
+        let x = deinterleave(z);
+        let y = deinterleave(z >> 1);
+        console.log(i + "," + tm[i]+ "," + x + "," + y);
+        if (tm[i] == 1) {
+            data.push({x: x, y: y});
+        }
+      }
+      console.log(data);
+
+      const svg = d3.select("#container")
+          .append("svg")
+          .attr("width", 1600).attr("height", 1600);
+
+      const scale = 8;
+      svg
+       .append("g")
+       .attr("fill", "steelblue")
+       .attr("fill-opacity", 1)
+        .selectAll()
+       .data(data)
+       .join("rect")
+       .attr("x", (d) => scale * d.x)
+       .attr("width", scale)
+       .attr("y", (d) => scale * d.y)
+       .attr("height", scale);      
+
+    </script>
+  </body>
+</html>
