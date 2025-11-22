@@ -27,22 +27,49 @@
       let y = deinterleave(z >> 1);
       console.log(x + ", " + y);
 
-      
+      function thue_morse_seq(n) {
+        // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
+        return [...Array(n)].reduce(a=>[...a,...a.map(i=>+!i)],[0]);        
+      }
 
-      // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
-      const tm = [...Array(8)].reduce(a=>[...a,...a.map(i=>+!i)],[0]);
+      function thue_morse_coords_z(n) {
+        // map the Thue-Morse sequence onto a z-order curve
+        const tm = thue_morse_seq(n);
+        let data = [];
+        for (let i = 0; i < tm.length; i++) {
+            let z = i;
+            let x = deinterleave(z);
+            let y = deinterleave(z >> 1);
+            if (tm[i] == 1) {
+                data.push({x: x, y: y});
+            }
+        } 
+        return data;
+      }
+
+      function thue_morse_coords_xor(n) {
+        // xor the x and y values of the Thue-Morse sequence
+        // TODO: don't need this long a seq
+        const tm = thue_morse_seq(2 * n);
+        let data = [];
+        for (let x = 0; x < 2 * n; x++) {
+            for (let y = 0; y < 2 * n; y++) {
+                let v = tm[x] ^ tm[y];
+                if (v == 1) {
+                    data.push({x: x, y: y});
+                }
+            }       
+        }
+        return data;
+      }
+
+      const tm = thue_morse_seq(8);
       console.log(tm);
 
-      let data = [];
-      for (let i = 0; i < tm.length; i++) {
-        let z = i;
-        let x = deinterleave(z);
-        let y = deinterleave(z >> 1);
-        console.log(i + "," + tm[i]+ "," + x + "," + y);
-        if (tm[i] == 1) {
-            data.push({x: x, y: y});
-        }
-      }
+    //   const data = thue_morse_coords_z(8);
+    //   console.log(data);
+
+      const data = thue_morse_coords_xor(8);
       console.log(data);
 
       const svg = d3.select("#container")
