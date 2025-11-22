@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+    <script src="tmz.js"></script>
+  </head>
+
+  <body>
+    <div>
+      <input type="range" id="k_input" name="k" min="0" max="7" value="4" />
+      <label for="k"><i>k</i>=<output id="k_output">4</output></label
+      >,
+      <label for="k">size=<output id="size_output">16</output></label>
+    </div>
+    <div>
+      <input
+        type="range"
+        id="block_size_input"
+        name="block_size"
+        min="1"
+        max="8"
+        value="1"
+      />
+      <label for="block_size"
+        >block size=<output id="block_size_output">1</output></label
+      >
+    </div>
+    <div id="container"></div>
+    <script type="text/javascript">
+      function tmz(k, blockSize) {
+        const n = 2 * k;
+        const size = 2 ** k;
+
+        // square of size 2^k
+        const data = thue_morse_coords_z(n);
+
+        d3.select("svg").remove();
+
+        const scale = blockSize * 10;
+        const margin = scale * 3; // for labels
+        const svg = d3
+          .select("#container")
+          .append("svg")
+          .attr("width", scale * size + margin)
+          .attr("height", scale * size + margin);
+        svg
+          .append("g")
+          .attr("fill", "steelblue")
+          .attr("fill-opacity", 1)
+          .selectAll()
+          .data(data)
+          .join("rect")
+          .attr("x", (d) => scale * d.x)
+          .attr("width", scale)
+          .attr("y", (d) => scale * d.y)
+          .attr("height", scale);
+
+        // TODO: rename
+        const xScale = d3
+          .scaleLinear()
+          .domain([0.5, blockSize * 2 ** k + 0.5])
+          .range([0, scale * 2 ** k]);
+        const yScale = d3
+          .scaleLinear()
+          .domain([0.5, blockSize * 2 ** k + 0.5])
+          .range([scale * 2 ** k, 0]);
+
+        const tickValues = d3.range(2, blockSize * 2 ** k + 2, 2);
+        svg
+          .append("g")
+          .attr("transform", `translate(${scale * 2 ** k},0)`) // TODO: fix
+          .call(
+            d3
+              .axisRight(yScale)
+              .tickFormat(d3.format(",d"))
+              .tickValues(tickValues)
+              .tickSize(0)
+          );
+        svg
+          .append("g")
+          .attr("transform", `translate(0,${scale * 2 ** k})`) // TODO: fix
+          .call(
+            d3
+              .axisBottom(yScale)
+              .tickFormat(d3.format(",d"))
+              .tickValues(tickValues)
+              .tickSize(0)
+          );
+
+        const gridTickValues = d3.range(0, blockSize * 2 ** k + 1, 1);
+        const xScale2 = d3
+          .scaleLinear()
+          .domain([0, blockSize * 2 ** k])
+          .range([0, scale * 2 ** k]);
+        const xGrid = d3
+          .axisBottom() // TODO: inconsistent with yGrid...
+          .scale(xScale2) // TODO: rename
+          .tickFormat("")
+          .tickValues(gridTickValues)
+          .tickSizeInner(scale * 2 ** k);
+        svg.append("g").call(xGrid);
+        const yScale2 = d3
+          .scaleLinear()
+          .domain([0, blockSize * 2 ** k])
+          .range([scale * 2 ** k, 0]);
+        const yGrid = d3
+          .axisRight()
+          .scale(yScale2)
+          .tickFormat("")
+          .tickValues(gridTickValues)
+          .tickSizeInner(scale * 2 ** k);
+        svg.append("g").call(yGrid);
+      }
+
+      const k_input = document.querySelector("#k_input");
+      const k_output = document.querySelector("#k_output");
+      const size_output = document.querySelector("#size_output");
+
+      const block_size_input = document.querySelector("#block_size_input");
+      const block_size_output = document.querySelector("#block_size_output");
+
+      k_input.addEventListener("input", (event) => {
+        const k = event.target.value;
+        k_output.value = k;
+        size_output.value = 2 ** k;
+        tmz(k, block_size_output.value);
+      });
+
+      // TODO: naming
+      block_size_input.addEventListener("input", (event) => {
+        const value = event.target.value;
+        block_size_output.value = value;
+        // TODO: update better
+        tmz(k_input.value, block_size_output.value);
+      });
+
+      const k = k_input.value;
+      tmz(k, block_size_output.value);
+    </script>
+  </body>
+</html>
