@@ -25,11 +25,16 @@
       let z = 6;
       let x = deinterleave(z);
       let y = deinterleave(z >> 1);
-      console.log(x + ", " + y);
 
       function thue_morse_seq(n) {
         // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
         return [...Array(n)].reduce(a=>[...a,...a.map(i=>+!i)],[0]);        
+      }
+
+      console.log("k, len(tm), 2^k, tm")
+      for (let k = 0; k <= 8; k++) {
+        const tm = thue_morse_seq(k);
+        console.log(k + ", " + tm.length + ", " + (2**k) + ", " + tm);
       }
 
       function thue_morse_coords_z(n) {
@@ -63,20 +68,24 @@
         return data;
       }
 
-      const tm = thue_morse_seq(8);
-      console.log(tm);
+      const k = 5;
+      const n = 2 * k;
+      const tm = thue_morse_seq(n);
+      console.log(n)
+      console.log(tm.length);
 
-    //   const data = thue_morse_coords_z(8);
-    //   console.log(data);
-
-      const data = thue_morse_coords_xor(8);
+      // square of size 2^k
+      const data = thue_morse_coords_z(n);
       console.log(data);
+
+    //   const data = thue_morse_coords_xor(n);
+    //   console.log(data);
 
       const svg = d3.select("#container")
           .append("svg")
           .attr("width", 1600).attr("height", 1600);
 
-      const scale = 8;
+      const scale = 10;
       svg
        .append("g")
        .attr("fill", "steelblue")
