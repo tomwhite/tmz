@@ -52,22 +52,6 @@
         return data;
       }
 
-      // TODO: refactor to share code
-      function thue_morse_coords_z_inv(n) {
-        // map the Thue-Morse sequence onto a z-order curve
-        const tm = thue_morse_seq(n);
-        let data = [];
-        for (let i = 0; i < tm.length; i++) {
-            let z = i;
-            let x = deinterleave(z);
-            let y = deinterleave(z >> 1);
-            if (tm[i] == 0) {
-                data.push({x: x, y: y});
-            }
-        } 
-        return data;
-      }
-
       function thue_morse_coords_xor(n) {
         // xor the x and y values of the Thue-Morse sequence
         // TODO: don't need this long a seq
@@ -84,7 +68,7 @@
         return data;
       }
 
-      const k = 3;
+      const k = 5;
       const n = 2 * k;
       const tm = thue_morse_seq(n);
       console.log(n)
@@ -93,7 +77,6 @@
       // square of size 2^k
       const data = thue_morse_coords_z(n);
       console.log(data);
-      const inverse = thue_morse_coords_z_inv(n);
 
     //   const data = thue_morse_coords_xor(n);
     //   console.log(data);
@@ -114,46 +97,6 @@
        .attr("width", scale)
        .attr("y", (d) => scale * d.y)
        .attr("height", scale);      
-
-      // TODO: add class to elements so they can be inverted
-      svg
-       .append("g")
-       .attr("class", "tmz-inv1")
-       .attr("fill", "steelblue")
-       .attr("fill-opacity", 1)
-        .selectAll()
-       .data(data)
-       .join("rect")
-       .attr("x", (d) => scale * d.x)
-       .attr("width", scale)
-       .attr("y", (d) => scale * d.y)
-       .attr("height", scale);      
-
-      svg
-       .append("g")
-       .attr("class", "tmz-inv2")
-       .attr("fill", "steelblue")
-       .attr("fill-opacity", 0)
-        .selectAll()
-       .data(inverse)
-       .join("rect")
-       .attr("x", (d) => scale * d.x)
-       .attr("width", scale)
-       .attr("y", (d) => scale * d.y)
-       .attr("height", scale);      
-
-      const t = d3.transition()
-       .duration(750)
-       .ease(d3.easeLinear);
-
-      d3.selectAll(".tmz-inv1").transition(t)
-       .style("transform", `translate(${scale * (2**k)}px,0px)`)
-       .transition(t)
-            .style("fill-opacity", "0");
-      d3.selectAll(".tmz-inv2").transition(t)
-       .style("transform", `translate(${scale * (2**k)}px,0px)`)
-       .transition(t)
-            .style("fill-opacity", "1");
 
     </script>
   </body>
