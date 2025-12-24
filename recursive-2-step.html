@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <button id="expand" onclick="expand()">Expand</button>
+    <p></p>
+    <div id="container"></div>
+    <script type="text/javascript">
+      const light = "#A2F2F1";
+      const dark = "steelblue";
+      const highlight = "orange";
+      const scale = 10;
+      const svg = d3
+        .select("#container")
+        .append("svg")
+        .attr("width", 1600)
+        .attr("height", 1600)
+        .append("g")
+        .attr("id", "root")
+        .append("rect")
+        .attr("x", 0)
+        .attr("width", scale)
+        .attr("y", 0)
+        .attr("height", scale)
+        .attr("fill", light);
+
+      let k = 0;
+
+      function invertRecursive(node) {
+        // invert the colours of all rect elements recursively
+        if (node.nodeName == "rect") {
+          if (node.getAttribute("fill") == dark) {
+            node.setAttribute("fill", light);
+          } else if (node.getAttribute("fill") == light) {
+            node.setAttribute("fill", dark);
+          }
+        }
+        const children = node.children;
+        for (let child of children) {
+          invertRecursive(child);
+        }
+      }
+
+      function expand() {
+        // disable button until animation is over
+        const button = document.getElementById("expand");
+        button.setAttribute("disabled", "disabled");
+
+        // the size of the block being expanded
+        let sizex, sizey;
+        if (k % 2 == 0) {
+          sizex = 2 ** (k / 2);
+          sizey = sizex;
+        } else {
+          sizex = 2 ** (1 + (k - (k % 2)) / 2);
+          sizey = 2 ** ((k - (k % 2)) / 2);
+        }
+        const sx = scale * sizex;
+        const sy = scale * sizey;
+
+        // 0  -> 01
+        // 00 -> 00
+        //       11
+        // where 1 is an inverted copy of 0
+        const square0 = d3.select("#root").selectChildren().remove().node();
+        const square1 = square0.cloneNode(true);
+
+        const g = d3.select("#root").append("g");
+
+        g.append("g").attr("id", `tmz-${k}-0`).node().appendChild(square0);
+        g.append("g").attr("id", `tmz-${k}-1`).node().appendChild(square1);
+
+        if (k % 2 == 0) {
+          d3.selectAll(`#tmz-${k}-1`).style(
+            "transform",
+            `translate(${sx}px,0px)`
+          );
+        } else {
+          d3.selectAll(`#tmz-${k}-1`).style(
+            "transform",
+            `translate(0px,${sy}px)`
+          );
+        }
+
+        // invert squares 1 and 2
+        setTimeout(() => {
+          invertRecursive(square1);
+        }, 750);
+
+        // highlight constituent squares for a short while
+        const t = d3.transition().duration(1500).ease(d3.easeLinear);
+        for (let i = 0; i < 2; i++) {
+          d3.selectAll(`#tmz-${k}-${i}`)
+            .append("rect")
+            .attr("width", sx)
+            .attr("height", sy)
+            .attr("fill", "none")
+            .attr("stroke", highlight)
+            .attr("stroke-width", 2)
+            .transition(t)
+            .style("stroke-opacity", 0);
+        }
+
+        // re-enable button if not at max level
+        t.on("end", () => {
+          if (k < 14) {
+            button.removeAttribute("disabled");
+          }
+        });
+
+        k++;
+      }
+    </script>
+  </body>
+</html>

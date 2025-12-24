@@ -10,7 +10,7 @@
     <div id="container"></div>
     <script type="text/javascript">
       const light = "#A2F2F1";
-      const dark = "steelblue"
+      const dark = "steelblue";
       const highlight = "orange";
       const scale = 10;
       const svg = d3
@@ -49,6 +49,7 @@
         const button = document.getElementById("expand");
         button.setAttribute("disabled", "disabled");
 
+        // the size of the square being expanded
         const size = 2 ** k;
         const s = scale * size;
 
@@ -67,12 +68,12 @@
         g.append("g").attr("id", `tmz-${k}-2`).node().appendChild(square2);
         g.append("g").attr("id", `tmz-${k}-3`).node().appendChild(square3);
 
-        d3.selectAll(`#tmz-${k}-1`)
-          .style("transform", `translate(${s}px,0px)`);
-        d3.selectAll(`#tmz-${k}-2`)
-          .style("transform", `translate(0px,${s}px)`);
-        d3.selectAll(`#tmz-${k}-3`)
-          .style("transform", `translate(${s}px,${s}px)`);
+        d3.selectAll(`#tmz-${k}-1`).style("transform", `translate(${s}px,0px)`);
+        d3.selectAll(`#tmz-${k}-2`).style("transform", `translate(0px,${s}px)`);
+        d3.selectAll(`#tmz-${k}-3`).style(
+          "transform",
+          `translate(${s}px,${s}px)`
+        );
 
         // invert squares 1 and 2
         setTimeout(() => {
@@ -97,7 +98,7 @@
         // re-enable button if not at max level
         t.on("end", () => {
           if (k < 7) {
-              button.removeAttribute("disabled");
+            button.removeAttribute("disabled");
           }
         });
 
