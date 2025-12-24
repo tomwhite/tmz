@@ -5,9 +5,8 @@
   </head>
 
   <body>
-    <h1>TMZ</h1>
-    <p><i>Tom White, November 2025</i></p>
-    <button onclick="update()">Update</button>
+    <button id="expand" onclick="expand()">Expand</button>
+    <p></p>
     <div id="container"></div>
     <script type="text/javascript">
       const scale = 10;
@@ -23,13 +22,9 @@
         .attr("width", scale)
         .attr("y", 0)
         .attr("height", scale)
-        .attr("fill", "steelblue");
-      let k = 0;
+        .attr("fill", "white");
 
-      function invert(node) {
-        invertRecursive(node);
-        return node;
-      }
+      let k = 0;
 
       function invertRecursive(node) {
         // invert the colours of all rect elements recursively
@@ -45,16 +40,21 @@
           invertRecursive(child);
         }
       }
-      function update() {
-        console.log("update", k);
+
+      function expand() {
+        // disable button until animation is over
+        const button = document.getElementById("expand");
+        button.setAttribute("disabled", "disabled");
+
         const size = 2 ** k;
+        const s = scale * size;
 
         // 0 -> 01
         //      23
         // where 0 and 3 are copies of 0, and 1 and 2 are inverted copies of 0
         const square0 = d3.select("#root").selectChildren().remove().node();
-        const square1 = invert(square0.cloneNode(true));
-        const square2 = square1.cloneNode(true);
+        const square1 = square0.cloneNode(true);
+        const square2 = square0.cloneNode(true);
         const square3 = square0.cloneNode(true);
 
         const g = d3.select("#root").append("g");
@@ -64,20 +64,21 @@
         g.append("g").attr("id", `tmz-${k}-2`).node().appendChild(square2);
         g.append("g").attr("id", `tmz-${k}-3`).node().appendChild(square3);
 
-        const t = d3.transition().duration(2000).ease(d3.easeLinear);
-        const s = scale * size;
-
         d3.selectAll(`#tmz-${k}-1`)
-          //   .transition(t)
           .style("transform", `translate(${s}px,0px)`);
         d3.selectAll(`#tmz-${k}-2`)
-          //   .transition(t)
           .style("transform", `translate(0px,${s}px)`);
         d3.selectAll(`#tmz-${k}-3`)
-          //   .transition(t)
           .style("transform", `translate(${s}px,${s}px)`);
 
-          // highlight constituent squares for a short while
+        // invert squares 1 and 2
+        setTimeout(() => {
+          invertRecursive(square1);
+          invertRecursive(square2);
+        }, 1500);
+
+        // highlight constituent squares for a short while
+        const t = d3.transition().duration(3000).ease(d3.easeLinear);
         for (let i = 0; i < 4; i++) {
           d3.selectAll(`#tmz-${k}-${i}`)
             .append("rect")
@@ -89,6 +90,13 @@
             .transition(t)
             .style("stroke-opacity", 0);
         }
+
+        // re-enable button if not at max level
+        t.on("end", () => {
+          if (k < 7) {
+              button.removeAttribute("disabled");
+          }
+        });
 
         k++;
       }
