@@ -1,0 +1,241 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+
+    <script type="text/javascript">
+      const light = "#A2F2F1";
+      const dark = "steelblue";
+      const highlight = "orange";
+      const scale = 10;
+
+      function draw_tmz(suffix, k) {
+        const size = 2 ** k;
+        const s = scale * size;
+
+        const svg = d3
+          .select(`#container-${suffix}`)
+          .append("svg")
+          .attr("width", s)
+          .attr("height", s)
+          .append("g")
+          .attr("id", `root-${suffix}`)
+          .append("rect")
+          .attr("x", 0)
+          .attr("width", scale)
+          .attr("y", 0)
+          .attr("height", scale)
+          .attr("fill", light);
+      }
+
+      function invertRecursive(node) {
+        // invert the colours of all rect elements recursively
+        if (node.nodeName == "rect") {
+          if (node.getAttribute("fill") == dark) {
+            node.setAttribute("fill", light);
+          } else if (node.getAttribute("fill") == light) {
+            node.setAttribute("fill", dark);
+          }
+        }
+        const children = node.children;
+        for (let child of children) {
+          invertRecursive(child);
+        }
+      }
+
+      function expand(suffix, k) {
+        // disable button until animation is over
+        // const button = document.getElementById("expand");
+        // button.setAttribute("disabled", "disabled");
+
+        // the size of the square being expanded
+        const size = 2 ** k;
+        const s = scale * size;
+
+        // 0 -> 01
+        //      23
+        // where 0 and 3 are copies of 0, and 1 and 2 are inverted copies of 0
+        const square0 = d3
+          .select(`#root-${suffix}`)
+          .selectChildren()
+          .remove()
+          .node();
+        const square1 = square0.cloneNode(true);
+        const square2 = square0.cloneNode(true);
+        const square3 = square0.cloneNode(true);
+
+        const g = d3.select(`#root-${suffix}`).append("g");
+
+        g.append("g")
+          .attr("id", `tmz-${k}-0-${suffix}`)
+          .node()
+          .appendChild(square0);
+        g.append("g")
+          .attr("id", `tmz-${k}-1-${suffix}`)
+          .node()
+          .appendChild(square1);
+        g.append("g")
+          .attr("id", `tmz-${k}-2-${suffix}`)
+          .node()
+          .appendChild(square2);
+        g.append("g")
+          .attr("id", `tmz-${k}-3-${suffix}`)
+          .node()
+          .appendChild(square3);
+
+        d3.selectAll(`#tmz-${k}-1-${suffix}`).style(
+          "transform",
+          `translate(${s}px,0px)`
+        );
+        d3.selectAll(`#tmz-${k}-2-${suffix}`).style(
+          "transform",
+          `translate(0px,${s}px)`
+        );
+        d3.selectAll(`#tmz-${k}-3-${suffix}`).style(
+          "transform",
+          `translate(${s}px,${s}px)`
+        );
+
+        // invert squares 1 and 2
+        // setTimeout(() => {
+        //   invertRecursive(square1);
+        //   invertRecursive(square2);
+        // }, 1000);
+
+        // highlight constituent squares for a short while
+        // const t = d3.transition().duration(2000).ease(d3.easeLinear);
+        // for (let i = 0; i < 4; i++) {
+        //   d3.selectAll(`#tmz-${k}-${i}-${suffix}`)
+        //     .append("rect")
+        //     .attr("width", s)
+        //     .attr("height", s)
+        //     .attr("fill", "none")
+        //     .attr("stroke", highlight)
+        //     .attr("stroke-width", 2);
+        //   // .transition(t)
+        //   // .style("stroke-opacity", 0);
+        // }
+
+        // re-enable button if not at max level
+        // t.on("end", () => {
+        //   if (k < 7) {
+        //     button.removeAttribute("disabled");
+        //     expand();
+        //   }
+        // });
+
+        // k++;
+      }
+
+      // TODO: rename
+      function highlight_(suffix, k) {
+        const size = 2 ** k;
+        const s = scale * size;
+        for (let i = 0; i < 4; i++) {
+          d3.selectAll(`#tmz-${k}-${i}-${suffix}`)
+            .append("rect")
+            .attr("width", s)
+            .attr("height", s)
+            .attr("fill", "none")
+            .attr("stroke", highlight)
+            .attr("stroke-width", 2);
+          // .transition(t)
+          // .style("stroke-opacity", 0);
+        }
+      }
+
+      function invert(suffix, k) {
+        invertRecursive(document.getElementById(`tmz-${k}-1-${suffix}`));
+        invertRecursive(document.getElementById(`tmz-${k}-2-${suffix}`));
+      }
+    </script>
+  </head>
+
+  <body>
+    <p>To generate the TMZ pattern, start with a single light cell:</p>
+
+    <div id="container-0"></div>
+
+    <p>
+      We expand by forming a larger square made up of four smaller squares
+      highlighted in orange:
+    </p>
+
+    <div id="container-1a"></div>
+
+    <p>
+      Then we invert the patterns in the top-right and bottom-left squares, so
+      that light and dark are swapped. The top-left and bottom-right squares are
+      left unchanged.
+    </p>
+
+    <div id="container-1b"></div>
+
+    <h3>Repeat</h3>
+
+    <p>Expand:</p>
+
+    <div id="container-2a"></div>
+
+    <p>Invert:</p>
+
+    <div id="container-2b"></div>
+
+    <h3>Repeat again</h3>
+
+    <p>Expand:</p>
+
+    <div id="container-3a"></div>
+
+    <p>Invert:</p>
+
+    <div id="container-3b"></div>
+
+    <h3>And so on...</h3>
+
+    <p>See an <a href="recursive.html">animation</a> of this expansion.</p>
+
+    <script type="text/javascript">
+      draw_tmz("0", 0);
+
+      draw_tmz("1a", 1);
+      expand("1a", 0);
+      highlight_("1a", 0);
+
+      draw_tmz("1b", 1);
+      expand("1b", 0);
+      invert("1b", 0);
+      highlight_("1b", 0);
+
+      draw_tmz("2a", 2);
+      expand("2a", 0);
+      invert("2a", 0);
+      expand("2a", 1);
+      highlight_("2a", 1);
+
+      draw_tmz("2b", 2);
+      expand("2b", 0);
+      invert("2b", 0);
+      expand("2b", 1);
+      invert("2b", 1);
+      highlight_("2b", 1);
+
+      draw_tmz("3a", 3);
+      expand("3a", 0);
+      invert("3a", 0);
+      expand("3a", 1);
+      invert("3a", 1);
+      expand("3a", 2);
+      highlight_("3a", 2);
+
+      draw_tmz("3b", 3);
+      expand("3b", 0);
+      invert("3b", 0);
+      expand("3b", 1);
+      invert("3b", 1);
+      expand("3b", 2);
+      invert("3b", 2);
+      highlight_("3b", 2);
+    </script>
+  </body>
+</html>
