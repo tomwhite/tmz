@@ -5,7 +5,7 @@
   </head>
 
   <body>
-    <button id="expand" onclick="expand()">Expand</button>
+    <button id="expand" onclick="expand()">Play</button>
     <p></p>
     <div id="container"></div>
     <script type="text/javascript">
@@ -99,6 +99,7 @@
         t.on("end", () => {
           if (k < 7) {
             button.removeAttribute("disabled");
+            expand();
           }
         });
 
