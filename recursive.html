@@ -9,6 +9,9 @@
     <p></p>
     <div id="container"></div>
     <script type="text/javascript">
+      const light = "#A2F2F1";
+      const dark = "steelblue"
+      const highlight = "orange";
       const scale = 10;
       const svg = d3
         .select("#container")
@@ -22,17 +25,17 @@
         .attr("width", scale)
         .attr("y", 0)
         .attr("height", scale)
-        .attr("fill", "white");
+        .attr("fill", light);
 
       let k = 0;
 
       function invertRecursive(node) {
         // invert the colours of all rect elements recursively
         if (node.nodeName == "rect") {
-          if (node.getAttribute("fill") == "steelblue") {
-            node.setAttribute("fill", "white");
-          } else if (node.getAttribute("fill") == "white") {
-            node.setAttribute("fill", "steelblue");
+          if (node.getAttribute("fill") == dark) {
+            node.setAttribute("fill", light);
+          } else if (node.getAttribute("fill") == light) {
+            node.setAttribute("fill", dark);
           }
         }
         const children = node.children;
@@ -85,7 +88,7 @@
             .attr("width", s)
             .attr("height", s)
             .attr("fill", "none")
-            .attr("stroke", "orange")
+            .attr("stroke", highlight)
             .attr("stroke-width", 2)
             .transition(t)
             .style("stroke-opacity", 0);
