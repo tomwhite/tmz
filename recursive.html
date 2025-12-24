@@ -59,19 +59,31 @@
 
         const g = d3.select("#root").append("g");
 
-        g.append("g").node().appendChild(square0);
+        g.append("g").attr("id", `tmz-${k}-0`).node().appendChild(square0);
         g.append("g")
-          .attr("transform", `translate(${scale * size},0)`)
+          .attr("id", `tmz-${k}-1`)
           .node()
           .appendChild(square1);
         g.append("g")
-          .attr("transform", `translate(0,${scale * size})`)
+          .attr("id", `tmz-${k}-2`)
           .node()
           .appendChild(square2);
         g.append("g")
-          .attr("transform", `translate(${scale * size},${scale * size})`)
+          .attr("id", `tmz-${k}-3`)
           .node()
           .appendChild(square3);
+
+        const t = d3.transition().duration(750).ease(d3.easeLinear);
+
+        d3.selectAll(`#tmz-${k}-1`)
+          .transition(t)
+          .style("transform", `translate(${scale * size}px,0px)`);
+        d3.selectAll(`#tmz-${k}-2`)
+          .transition(t)
+          .style("transform", `translate(0px,${scale * size}px)`);
+        d3.selectAll(`#tmz-${k}-3`)
+          .transition(t)
+          .style("transform", `translate(${scale * size}px,${scale * size}px)`);
         k++;
       }
     </script>
