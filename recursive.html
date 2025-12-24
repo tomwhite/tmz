@@ -60,30 +60,36 @@
         const g = d3.select("#root").append("g");
 
         g.append("g").attr("id", `tmz-${k}-0`).node().appendChild(square0);
-        g.append("g")
-          .attr("id", `tmz-${k}-1`)
-          .node()
-          .appendChild(square1);
-        g.append("g")
-          .attr("id", `tmz-${k}-2`)
-          .node()
-          .appendChild(square2);
-        g.append("g")
-          .attr("id", `tmz-${k}-3`)
-          .node()
-          .appendChild(square3);
+        g.append("g").attr("id", `tmz-${k}-1`).node().appendChild(square1);
+        g.append("g").attr("id", `tmz-${k}-2`).node().appendChild(square2);
+        g.append("g").attr("id", `tmz-${k}-3`).node().appendChild(square3);
 
-        const t = d3.transition().duration(750).ease(d3.easeLinear);
+        const t = d3.transition().duration(2000).ease(d3.easeLinear);
+        const s = scale * size;
 
         d3.selectAll(`#tmz-${k}-1`)
-        //   .transition(t)
-          .style("transform", `translate(${scale * size}px,0px)`);
+          //   .transition(t)
+          .style("transform", `translate(${s}px,0px)`);
         d3.selectAll(`#tmz-${k}-2`)
-        //   .transition(t)
-          .style("transform", `translate(0px,${scale * size}px)`);
+          //   .transition(t)
+          .style("transform", `translate(0px,${s}px)`);
         d3.selectAll(`#tmz-${k}-3`)
-        //   .transition(t)
-          .style("transform", `translate(${scale * size}px,${scale * size}px)`);
+          //   .transition(t)
+          .style("transform", `translate(${s}px,${s}px)`);
+
+          // highlight constituent squares for a short while
+        for (let i = 0; i < 4; i++) {
+          d3.selectAll(`#tmz-${k}-${i}`)
+            .append("rect")
+            .attr("width", s)
+            .attr("height", s)
+            .attr("fill", "none")
+            .attr("stroke", "orange")
+            .attr("stroke-width", 2)
+            .transition(t)
+            .style("stroke-opacity", 0);
+        }
+
         k++;
       }
     </script>
