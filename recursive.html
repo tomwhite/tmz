@@ -51,6 +51,7 @@
 
         // 0 -> 01
         //      23
+        // where 0 and 3 are copies of 0, and 1 and 2 are inverted copies of 0
         const square0 = d3.select("#root").selectChildren().remove().node();
         const square1 = invert(square0.cloneNode(true));
         const square2 = square1.cloneNode(true);
