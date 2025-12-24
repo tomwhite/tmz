@@ -79,10 +79,10 @@
         setTimeout(() => {
           invertRecursive(square1);
           invertRecursive(square2);
-        }, 1500);
+        }, 1000);
 
         // highlight constituent squares for a short while
-        const t = d3.transition().duration(3000).ease(d3.easeLinear);
+        const t = d3.transition().duration(2000).ease(d3.easeLinear);
         for (let i = 0; i < 4; i++) {
           d3.selectAll(`#tmz-${k}-${i}`)
             .append("rect")

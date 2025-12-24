@@ -7,97 +7,17 @@
   <body>
     <h1>TMZ</h1>
     <p><i>Tom White, November 2025</i></p>
-    <p>
-        <div id="container"></div>
-    </p>
-    <script type="text/javascript">
-      // https://gist.github.com/jaredwinick/5073432
-      // http://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
-      deinterleave = function (x) {
-        x = x & 0x55555555;
-        x = (x | (x >> 1)) & 0x33333333;
-        x = (x | (x >> 2)) & 0x0f0f0f0f;
-        x = (x | (x >> 4)) & 0x00ff00ff;
-        x = (x | (x >> 8)) & 0x0000ffff;
-        return x;
-      };
-      // go from z-order to (x, y) coordinates
-      let z = 6;
-      let x = deinterleave(z);
-      let y = deinterleave(z >> 1);
+    <p>The Thue-Morse sequence and Z-order curves</p>
 
-      function thue_morse_seq(n) {
-        // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
-        return [...Array(n)].reduce(a=>[...a,...a.map(i=>+!i)],[0]);        
-      }
-
-      console.log("k, len(tm), 2^k, tm")
-      for (let k = 0; k <= 8; k++) {
-        const tm = thue_morse_seq(k);
-        console.log(k + ", " + tm.length + ", " + (2**k) + ", " + tm);
-      }
-
-      function thue_morse_coords_z(n) {
-        // map the Thue-Morse sequence onto a z-order curve
-        const tm = thue_morse_seq(n);
-        let data = [];
-        for (let i = 0; i < tm.length; i++) {
-            let z = i;
-            let x = deinterleave(z);
-            let y = deinterleave(z >> 1);
-            if (tm[i] == 1) {
-                data.push({x: x, y: y});
-            }
-        } 
-        return data;
-      }
-
-      function thue_morse_coords_xor(n) {
-        // xor the x and y values of the Thue-Morse sequence
-        // TODO: don't need this long a seq
-        const tm = thue_morse_seq(2 * n);
-        let data = [];
-        for (let x = 0; x < 2 * n; x++) {
-            for (let y = 0; y < 2 * n; y++) {
-                let v = tm[x] ^ tm[y];
-                if (v == 1) {
-                    data.push({x: x, y: y});
-                }
-            }       
-        }
-        return data;
-      }
-
-      const k = 5;
-      const n = 2 * k;
-      const tm = thue_morse_seq(n);
-      console.log(n)
-      console.log(tm.length);
-
-      // square of size 2^k
-      const data = thue_morse_coords_z(n);
-      console.log(data);
-
-    //   const data = thue_morse_coords_xor(n);
-    //   console.log(data);
-
-      const svg = d3.select("#container")
-          .append("svg")
-          .attr("width", 1600).attr("height", 1600);
-
-      const scale = 10;
-      svg
-       .append("g")
-       .attr("fill", "steelblue")
-       .attr("fill-opacity", 1)
-        .selectAll()
-       .data(data)
-       .join("rect")
-       .attr("x", (d) => scale * d.x)
-       .attr("width", scale)
-       .attr("y", (d) => scale * d.y)
-       .attr("height", scale);      
-
-    </script>
+    <ul>
+      <li>The basic <a href="tmz.html">TMZ</a> pattern.</li>
+      <li>
+        Generating TMZ by <a href="recursive.html">recursive expansion</a>.
+      </li>
+      <li>
+        Generating TMZ by
+        <a href="recursive-2-step.html">recursive 2-step expansion</a>.
+      </li>
+    </ul>
   </body>
 </html>
