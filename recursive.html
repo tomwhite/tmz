@@ -76,13 +76,13 @@
         const t = d3.transition().duration(750).ease(d3.easeLinear);
 
         d3.selectAll(`#tmz-${k}-1`)
-          .transition(t)
+        //   .transition(t)
           .style("transform", `translate(${scale * size}px,0px)`);
         d3.selectAll(`#tmz-${k}-2`)
-          .transition(t)
+        //   .transition(t)
           .style("transform", `translate(0px,${scale * size}px)`);
         d3.selectAll(`#tmz-${k}-3`)
-          .transition(t)
+        //   .transition(t)
           .style("transform", `translate(${scale * size}px,${scale * size}px)`);
         k++;
       }
