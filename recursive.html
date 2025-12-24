@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <h1>TMZ</h1>
+    <p><i>Tom White, November 2025</i></p>
+    <button onclick="update()">Update</button>
+    <div id="container"></div>
+    <script type="text/javascript">
+      const scale = 10;
+      const svg = d3
+        .select("#container")
+        .append("svg")
+        .attr("width", 1600)
+        .attr("height", 1600)
+        .append("g")
+        .attr("id", "root")
+        .append("rect")
+        .attr("x", 0)
+        .attr("width", scale)
+        .attr("y", 0)
+        .attr("height", scale)
+        .attr("fill", "steelblue");
+      let k = 0;
+
+      function invert(node) {
+        invertRecursive(node);
+        return node;
+      }
+
+      function invertRecursive(node) {
+        // invert the colours of all rect elements recursively
+        if (node.nodeName == "rect") {
+          if (node.getAttribute("fill") == "steelblue") {
+            node.setAttribute("fill", "white");
+          } else if (node.getAttribute("fill") == "white") {
+            node.setAttribute("fill", "steelblue");
+          }
+        }
+        const children = node.children;
+        for (let child of children) {
+          invertRecursive(child);
+        }
+      }
+      function update() {
+        console.log("update", k);
+        const size = 2 ** k;
+
+        // 0 -> 01
+        //      23
+        const square0 = d3.select("#root").selectChildren().remove().node();
+        const square1 = invert(square0.cloneNode(true));
+        const square2 = square1.cloneNode(true);
+        const square3 = square0.cloneNode(true);
+
+        const g = d3.select("#root").append("g");
+
+        g.append("g").node().appendChild(square0);
+        g.append("g")
+          .attr("transform", `translate(${scale * size},0)`)
+          .node()
+          .appendChild(square1);
+        g.append("g")
+          .attr("transform", `translate(0,${scale * size})`)
+          .node()
+          .appendChild(square2);
+        g.append("g")
+          .attr("transform", `translate(${scale * size},${scale * size})`)
+          .node()
+          .appendChild(square3);
+        k++;
+      }
+    </script>
+  </body>
+</html>
