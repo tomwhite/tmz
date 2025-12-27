@@ -1,0 +1,193 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <div>
+      <input type="range" id="k_input" name="k" min="0" max="7" value="4" />
+      <label for="k"><i>k</i>=<output id="k_output">4</output></label>
+    </div>
+    <div>
+      <input
+        type="range"
+        id="block_size_input"
+        name="block_size"
+        min="1"
+        max="8"
+        value="1"
+      />
+      <label for="block_size"
+        ><i>block size</i>=<output id="block_size_output">1</output></label
+      >
+    </div>
+    <div id="container"></div>
+    <script type="text/javascript">
+      // https://gist.github.com/jaredwinick/5073432
+      // http://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
+      deinterleave = function (x) {
+        x = x & 0x55555555;
+        x = (x | (x >> 1)) & 0x33333333;
+        x = (x | (x >> 2)) & 0x0f0f0f0f;
+        x = (x | (x >> 4)) & 0x00ff00ff;
+        x = (x | (x >> 8)) & 0x0000ffff;
+        return x;
+      };
+      // go from z-order to (x, y) coordinates
+      let z = 6;
+      let x = deinterleave(z);
+      let y = deinterleave(z >> 1);
+
+      function thue_morse_seq(n) {
+        // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
+        return [...Array(n)].reduce((a) => [...a, ...a.map((i) => +!i)], [0]);
+      }
+
+      console.log("k, len(tm), 2^k, tm");
+      for (let k = 0; k <= 8; k++) {
+        const tm = thue_morse_seq(k);
+        console.log(k + ", " + tm.length + ", " + 2 ** k + ", " + tm);
+      }
+
+      function thue_morse_coords_z(n) {
+        // map the Thue-Morse sequence onto a z-order curve
+        const tm = thue_morse_seq(n);
+        let data = [];
+        for (let i = 0; i < tm.length; i++) {
+          let z = i;
+          let x = deinterleave(z);
+          let y = deinterleave(z >> 1);
+          if (tm[i] == 1) {
+            data.push({ x: x, y: y });
+          }
+        }
+        return data;
+      }
+
+      function thue_morse_coords_xor(n) {
+        // xor the x and y values of the Thue-Morse sequence
+        // TODO: don't need this long a seq
+        const tm = thue_morse_seq(2 * n);
+        let data = [];
+        for (let x = 0; x < 2 * n; x++) {
+          for (let y = 0; y < 2 * n; y++) {
+            let v = tm[x] ^ tm[y];
+            if (v == 1) {
+              data.push({ x: x, y: y });
+            }
+          }
+        }
+        return data;
+      }
+
+      function tmz(k, blockSize) {
+        const n = 2 * k;
+        const tm = thue_morse_seq(n);
+
+        // square of size 2^k
+        const data = thue_morse_coords_z(n);
+
+        d3.select("svg").remove();
+
+        const svg = d3
+          .select("#container")
+          .append("svg")
+          .attr("width", 1600)
+          .attr("height", 1600);
+
+        const scale = blockSize * 10;
+        svg
+          .append("g")
+          .attr("fill", "steelblue")
+          .attr("fill-opacity", 1)
+          .selectAll()
+          .data(data)
+          .join("rect")
+          .attr("x", (d) => scale * d.x)
+          .attr("width", scale)
+          .attr("y", (d) => scale * d.y)
+          .attr("height", scale);
+
+        // TODO: rename
+        const xScale = d3
+          .scaleLinear()
+          .domain([0.5, blockSize * 2 ** k + 0.5])
+          .range([0, scale * 2 ** k]);
+        const yScale = d3
+          .scaleLinear()
+          .domain([0.5, blockSize * 2 ** k + 0.5])
+          .range([scale * 2 ** k, 0]);
+
+        const tickValues = d3.range(2, blockSize * 2 ** k + 2, 2);
+        svg
+          .append("g")
+          .attr("transform", `translate(${scale * 2 ** k},0)`) // TODO: fix
+          .call(
+            d3
+              .axisRight(yScale)
+              .tickFormat(d3.format(",d"))
+              .tickValues(tickValues)
+              .tickSize(0)
+          );
+        svg
+          .append("g")
+          .attr("transform", `translate(0,${scale * 2 ** k})`) // TODO: fix
+          .call(
+            d3
+              .axisBottom(yScale)
+              .tickFormat(d3.format(",d"))
+              .tickValues(tickValues)
+              .tickSize(0)
+          );
+
+        const gridTickValues = d3.range(0, blockSize * 2 ** k + 1, 1);
+        const xScale2 = d3
+          .scaleLinear()
+          .domain([0, blockSize * 2 ** k])
+          .range([0, scale * 2 ** k]);
+        const xGrid = d3
+          .axisBottom() // TODO: inconsistent with yGrid...
+          .scale(xScale2) // TODO: rename
+          .tickFormat("")
+          .tickValues(gridTickValues)
+          .tickSizeInner(scale * 2 ** k);
+        svg.append("g").call(xGrid);
+        const yScale2 = d3
+          .scaleLinear()
+          .domain([0, blockSize * 2 ** k])
+          .range([scale * 2 ** k, 0]);
+        const yGrid = d3
+          .axisRight()
+          .scale(yScale2)
+          .tickFormat("")
+          .tickValues(gridTickValues)
+          .tickSizeInner(scale * 2 ** k);
+        svg.append("g").call(yGrid);
+      }
+
+      const input = document.querySelector("#k_input");
+      const output = document.querySelector("#k_output");
+
+      const block_size_input = document.querySelector("#block_size_input");
+      const block_size_output = document.querySelector("#block_size_output");
+
+      input.addEventListener("input", (event) => {
+        const k = event.target.value;
+        output.value = k;
+        tmz(k, block_size_output.value);
+      });
+
+      // TODO: naming
+      block_size_input.addEventListener("input", (event) => {
+        const value = event.target.value;
+        block_size_output.value = value;
+        // TODO: update better
+        tmz(input.value, block_size_output.value);
+      });
+
+      const k = input.value;
+      tmz(k, block_size_output.value);
+    </script>
+  </body>
+</html>
