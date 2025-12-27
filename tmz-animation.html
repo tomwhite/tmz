@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript">
+      // https://gist.github.com/jaredwinick/5073432
+      // http://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
+      deinterleave = function (x) {
+        x = x & 0x55555555;
+        x = (x | (x >> 1)) & 0x33333333;
+        x = (x | (x >> 2)) & 0x0f0f0f0f;
+        x = (x | (x >> 4)) & 0x00ff00ff;
+        x = (x | (x >> 8)) & 0x0000ffff;
+        return x;
+      };
+      // go from z-order to (x, y) coordinates
+      let z = 6;
+      let x = deinterleave(z);
+      let y = deinterleave(z >> 1);
+
+      function thue_morse_seq(n) {
+        // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
+        return [...Array(n)].reduce((a) => [...a, ...a.map((i) => +!i)], [0]);
+      }
+
+      console.log("k, len(tm), 2^k, tm");
+      for (let k = 0; k <= 8; k++) {
+        const tm = thue_morse_seq(k);
+        console.log(k + ", " + tm.length + ", " + 2 ** k + ", " + tm);
+      }
+
+      function thue_morse_coords_z(n) {
+        // map the Thue-Morse sequence onto a z-order curve
+        const tm = thue_morse_seq(n);
+        let data = [];
+        for (let i = 0; i < tm.length; i++) {
+          let z = i;
+          let x = deinterleave(z);
+          let y = deinterleave(z >> 1);
+          if (tm[i] == 1) {
+            data.push({ x: x, y: y });
+          }
+        }
+        return data;
+      }
+
+      function thue_morse_coords_xor(n) {
+        // xor the x and y values of the Thue-Morse sequence
+        // TODO: don't need this long a seq
+        const tm = thue_morse_seq(2 * n);
+        let data = [];
+        for (let x = 0; x < 2 * n; x++) {
+          for (let y = 0; y < 2 * n; y++) {
+            let v = tm[x] ^ tm[y];
+            if (v == 1) {
+              data.push({ x: x, y: y });
+            }
+          }
+        }
+        return data;
+      }
+
+      function tmz(k) {
+        const n = 2 * k;
+        const tm = thue_morse_seq(n);
+
+        // square of size 2^k
+        const data = thue_morse_coords_z(n);
+
+        d3.select("svg").remove();
+
+        const svg = d3
+          .select("#container")
+          .append("svg")
+          .attr("viewBox", "-1 -1 1600 1600")
+          .attr("width", 1600)
+          .attr("height", 1600);
+
+        const scale = 10;
+        svg
+          .append("g")
+          .attr("fill", "steelblue")
+          .attr("fill-opacity", 1)
+          .selectAll()
+          .data(data)
+          .join("rect")
+          .attr("x", (d) => scale * d.x)
+          .attr("width", scale)
+          .attr("y", (d) => scale * d.y)
+          .attr("height", scale);
+
+        // draw the z curve
+        let d = "M 0 0 ";
+        // for (let z = 0; z < 2 * data.length; z++) {
+        //   let x = deinterleave(z);
+        //   let y = deinterleave(z >> 1);
+        //   d += `L ${scale * x} ${scale * y} `;
+        // }
+        svg
+          .append("g")
+          .attr("transform", `translate(${scale / 2},${scale / 2})`)
+          .append("path")
+          .attr("id", "tmz-z-curve")
+          .attr("d", d)
+          .attr("fill", "none")
+          .attr("stroke", "black")
+          .attr("stroke-width", 1)
+          .attr("stroke-opacity", 1);
+
+        const highlight = "red"; // TODO: move
+        const strokeWidth = 2;
+        svg
+          .append("g")
+          .append("rect")
+          .attr("id", "tmz-highlight-1")
+          .attr("width", scale)
+          .attr("height", scale)
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("fill", "none")
+          .attr("stroke", highlight)
+          .attr("stroke-width", 2);
+        svg
+          .append("g")
+          .append("rect")
+          .attr("id", "tmz-highlight-2")
+          .attr("width", scale)
+          .attr("height", scale)
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("fill", "none")
+          .attr("stroke", highlight)
+          .attr("stroke-width", 2);
+        svg
+          .append("g")
+          .append("rect")
+          .attr("id", "tmz-highlight-3")
+          .attr("width", scale)
+          .attr("height", scale)
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("fill", "none")
+          .attr("stroke", highlight)
+          .attr("stroke-width", 2);
+
+        let z = 0;
+        let ticker = d3.interval(() => {
+          console.log("z", z);
+          z++;
+          let x = deinterleave(z);
+          let y = deinterleave(z >> 1);
+          d3.selectAll("#tmz-highlight-1")
+            .attr("x", scale * x)
+            .attr("y", scale * y);
+          d3.selectAll("#tmz-highlight-2").attr("x", scale * z);
+          d3.selectAll("#tmz-highlight-3").attr("y", scale * z);
+
+          // draw the z curve
+          let d = "M 0 0 ";
+          for (let i = 0; i <= z; i++) {
+            let x = deinterleave(i);
+            let y = deinterleave(i >> 1);
+            d += `L ${scale * x} ${scale * y} `;
+          }
+          d3.selectAll("#tmz-z-curve").attr("d", d);
+
+          if (z >= 2 ** k - 1) {
+            ticker.stop();
+          }
+        }, 750);
+      }
+
+      const k = 4;
+      tmz(k);
+    </script>
+  </body>
+</html>
