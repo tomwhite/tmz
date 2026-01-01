@@ -1,0 +1,46 @@
+// https://gist.github.com/jaredwinick/5073432
+// http://stackoverflow.com/questions/4909263/how-to-efficiently-de-interleave-bits-inverse-morton
+function deinterleave(x) {
+  x = x & 0x55555555;
+  x = (x | (x >> 1)) & 0x33333333;
+  x = (x | (x >> 2)) & 0x0f0f0f0f;
+  x = (x | (x >> 4)) & 0x00ff00ff;
+  x = (x | (x >> 8)) & 0x0000ffff;
+  return x;
+};
+
+function thue_morse_seq(n) {
+  // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
+  return [...Array(n)].reduce((a) => [...a, ...a.map((i) => +!i)], [0]);
+}
+
+function thue_morse_coords_z(n) {
+  // map the Thue-Morse sequence onto a z-order curve
+  const tm = thue_morse_seq(n);
+  let data = [];
+  for (let i = 0; i < tm.length; i++) {
+    let z = i;
+    let x = deinterleave(z);
+    let y = deinterleave(z >> 1);
+    if (tm[i] == 1) {
+      data.push({ x: x, y: y });
+    }
+  }
+  return data;
+}
+
+function thue_morse_coords_xor(n) {
+  // xor the x and y values of the Thue-Morse sequence
+  // TODO: don't need this long a seq
+  const tm = thue_morse_seq(2 * n);
+  let data = [];
+  for (let x = 0; x < 2 * n; x++) {
+    for (let y = 0; y < 2 * n; y++) {
+      let v = tm[x] ^ tm[y];
+      if (v == 1) {
+        data.push({ x: x, y: y });
+      }
+    }
+  }
+  return data;
+}
