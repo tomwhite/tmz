@@ -7,7 +7,7 @@ function deinterleave(x) {
   x = (x | (x >> 4)) & 0x00ff00ff;
   x = (x | (x >> 8)) & 0x0000ffff;
   return x;
-};
+}
 
 function thue_morse_seq(n) {
   // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
@@ -43,4 +43,14 @@ function thue_morse_coords_xor(n) {
     }
   }
   return data;
+}
+
+function z_curve_path(z, scale) {
+  let d = "M 0 0 ";
+  for (let i = 0; i <= z; i++) {
+    let x = deinterleave(i);
+    let y = deinterleave(i >> 1);
+    d += `L ${scale * x} ${scale * y} `;
+  }
+  return d;
 }
