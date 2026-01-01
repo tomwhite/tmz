@@ -9,6 +9,25 @@ function deinterleave(x) {
   return x;
 }
 
+// http://graphics.stanford.edu/~seander/bithacks.html#InterleaveBMN
+function interleave(x, y) {
+  var B = [0x55555555, 0x33333333, 0x0f0f0f0f, 0x00ff00ff];
+  var S = [1, 2, 4, 8];
+
+  x = (x | (x << S[3])) & B[3];
+  x = (x | (x << S[2])) & B[2];
+  x = (x | (x << S[1])) & B[1];
+  x = (x | (x << S[0])) & B[0];
+
+  y = (y | (y << S[3])) & B[3];
+  y = (y | (y << S[2])) & B[2];
+  y = (y | (y << S[1])) & B[1];
+  y = (y | (y << S[0])) & B[0];
+
+  z = x | (y << 1);
+  return z;
+};
+
 function thue_morse_seq(n) {
   // https://gist.github.com/arnaud/ae4b5e2c6bb412fb8a274862dd1ab234
   return [...Array(n)].reduce((a) => [...a, ...a.map((i) => +!i)], [0]);
