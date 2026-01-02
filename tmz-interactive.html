@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+    <script src="tmz.js"></script>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript">
+      function tmz(k) {
+        const n = 2 * k;
+        const tm = thue_morse_seq(n);
+
+        // square of size 2^k
+        const data = thue_morse_coords_z_values(n);
+
+        d3.select("svg").remove();
+
+        const svg = d3
+          .select("#container")
+          .append("svg")
+          .attr("viewBox", "-1 -1 1600 1600")
+          .attr("width", 1600)
+          .attr("height", 1600);
+
+        const scale = 10;
+        svg
+          .append("g")
+          .selectAll()
+          .data(data)
+          .join("rect")
+          .attr("fill", (d) => (d.value == 0 ? "white" : "steelblue"))
+          .attr("x", (d) => scale * d.x)
+          .attr("width", scale)
+          .attr("y", (d) => scale * d.y)
+          .attr("height", scale)
+          .on("mouseover", (data, index, element) => {
+            const x = index.x;
+            const y = index.y;
+            const z = interleave(x, y);
+            if (z < 2 ** k) {
+              d3.selectAll("#tmz-highlight-1")
+                .attr("x", scale * x)
+                .attr("y", scale * y)
+                .attr("visibility", "visible");
+              d3.selectAll("#tmz-highlight-2")
+                .attr("x", scale * z)
+                .attr("visibility", "visible");
+              d3.selectAll("#tmz-highlight-3")
+                .attr("y", scale * z)
+                .attr("visibility", "visible");
+            }
+            d3.selectAll("#tmz-z-curve").attr("d", z_curve_path(z, scale));
+          })
+          .on("mouseout", (data, index, element) => {
+            d3.selectAll("#tmz-highlight-1").attr("visibility", "hidden");
+            d3.selectAll("#tmz-highlight-2").attr("visibility", "hidden");
+            d3.selectAll("#tmz-highlight-3").attr("visibility", "hidden");
+            d3.selectAll("#tmz-z-curve").attr("d", "");
+          });
+
+        svg
+          .append("g")
+          .attr("transform", `translate(${scale / 2},${scale / 2})`)
+          .append("path")
+          .attr("id", "tmz-z-curve")
+          .attr("d", "")
+          .attr("fill", "none")
+          .attr("stroke", "black")
+          .attr("stroke-width", 1)
+          .attr("stroke-opacity", 1);
+
+        const highlight = "red"; // TODO: move
+        const strokeWidth = 2;
+        svg
+          .append("g")
+          .append("rect")
+          .attr("id", "tmz-highlight-1")
+          .attr("width", scale)
+          .attr("height", scale)
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("fill", "none")
+          .attr("stroke", highlight)
+          .attr("stroke-width", 2)
+          .attr("visibility", "hidden");
+        svg
+          .append("g")
+          .append("rect")
+          .attr("id", "tmz-highlight-2")
+          .attr("width", scale)
+          .attr("height", scale)
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("fill", "none")
+          .attr("stroke", highlight)
+          .attr("stroke-width", 2)
+          .attr("visibility", "hidden");
+        svg
+          .append("g")
+          .append("rect")
+          .attr("id", "tmz-highlight-3")
+          .attr("width", scale)
+          .attr("height", scale)
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("fill", "none")
+          .attr("stroke", highlight)
+          .attr("stroke-width", 2)
+          .attr("visibility", "hidden");
+      }
+
+      const k = 5;
+      tmz(k);
+    </script>
+  </body>
+</html>

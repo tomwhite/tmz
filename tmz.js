@@ -48,6 +48,19 @@ function thue_morse_coords_z(n) {
   return data;
 }
 
+function thue_morse_coords_z_values(n) {
+  // map the Thue-Morse sequence onto a z-order curve
+  const tm = thue_morse_seq(n);
+  let data = [];
+  for (let i = 0; i < tm.length; i++) {
+    let z = i;
+    let x = deinterleave(z);
+    let y = deinterleave(z >> 1);
+    data.push({ x: x, y: y, value: tm[i] })
+  }
+  return data;
+}
+
 function thue_morse_coords_xor(n) {
   // xor the x and y values of the Thue-Morse sequence
   // TODO: don't need this long a seq
