@@ -8,7 +8,8 @@
   <body>
     <div>
       <input type="range" id="k_input" name="k" min="0" max="7" value="4" />
-      <label for="k"><i>k</i>=<output id="k_output">4</output></label>
+      <label for="k"><i>k</i>=<output id="k_output">4</output></label>,
+      <label for="k">size=<output id="size_output">16</output></label>
     </div>
     <div id="container"></div>
     <script type="text/javascript">
@@ -41,15 +42,17 @@
           .attr("height", scale);
       }
 
-      const input = document.querySelector("#k_input");
-      const output = document.querySelector("#k_output");
-      input.addEventListener("input", (event) => {
+      const k_input = document.querySelector("#k_input");
+      const k_output = document.querySelector("#k_output");
+      const size_output = document.querySelector("#size_output");
+      k_input.addEventListener("input", (event) => {
         const k = event.target.value;
-        output.value = k;
+        k_output.value = k;
+        size_output.value = 2 ** k;
         tmz(k);
       });
 
-      const k = input.value;
+      const k = k_input.value;
       tmz(k);
     </script>
   </body>

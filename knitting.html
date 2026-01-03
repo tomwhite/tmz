@@ -8,7 +8,9 @@
   <body>
     <div>
       <input type="range" id="k_input" name="k" min="0" max="7" value="4" />
-      <label for="k"><i>k</i>=<output id="k_output">4</output></label>
+      <label for="k"><i>k</i>=<output id="k_output">4</output></label
+      >,
+      <label for="k">size=<output id="size_output">16</output></label>
     </div>
     <div>
       <input
@@ -20,7 +22,7 @@
         value="1"
       />
       <label for="block_size"
-        ><i>block size</i>=<output id="block_size_output">1</output></label
+        >block size=<output id="block_size_output">1</output></label
       >
     </div>
     <div id="container"></div>
@@ -111,15 +113,17 @@
         svg.append("g").call(yGrid);
       }
 
-      const input = document.querySelector("#k_input");
-      const output = document.querySelector("#k_output");
+      const k_input = document.querySelector("#k_input");
+      const k_output = document.querySelector("#k_output");
+      const size_output = document.querySelector("#size_output");
 
       const block_size_input = document.querySelector("#block_size_input");
       const block_size_output = document.querySelector("#block_size_output");
 
-      input.addEventListener("input", (event) => {
+      k_input.addEventListener("input", (event) => {
         const k = event.target.value;
-        output.value = k;
+        k_output.value = k;
+        size_output.value = 2 ** k;
         tmz(k, block_size_output.value);
       });
 
@@ -128,10 +132,10 @@
         const value = event.target.value;
         block_size_output.value = value;
         // TODO: update better
-        tmz(input.value, block_size_output.value);
+        tmz(k_input.value, block_size_output.value);
       });
 
-      const k = input.value;
+      const k = k_input.value;
       tmz(k, block_size_output.value);
     </script>
   </body>
