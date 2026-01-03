@@ -10,6 +10,7 @@
     <script type="text/javascript">
       function tmz(k) {
         const n = 2 * k;
+        const size = 2 ** k;
         const tm = thue_morse_seq(n);
 
         // square of size 2^k
@@ -17,14 +18,13 @@
 
         d3.select("svg").remove();
 
+        const scale = 10;
         const svg = d3
           .select("#container")
           .append("svg")
-          .attr("viewBox", "-1 -1 1600 1600")
-          .attr("width", 1600)
-          .attr("height", 1600);
-
-        const scale = 10;
+          .attr("viewBox", `-1 -1 ${scale * size} ${scale * size}`)
+          .attr("width", scale * size)
+          .attr("height", scale * size);
         svg
           .append("g")
           .attr("fill", "steelblue")
@@ -90,7 +90,6 @@
 
         let z = 0;
         let ticker = d3.interval(() => {
-          console.log("z", z);
           z++;
           let x = deinterleave(z);
           let y = deinterleave(z >> 1);
@@ -107,7 +106,7 @@
         }, 750);
       }
 
-      const k = 5;
+      const k = 4;
       tmz(k);
     </script>
   </body>

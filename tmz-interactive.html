@@ -14,6 +14,7 @@
     <script type="text/javascript">
       function tmz(k) {
         const n = 2 * k;
+        const size = 2 ** k;
         const tm = thue_morse_seq(n);
 
         // square of size 2^k
@@ -21,14 +22,14 @@
 
         d3.select("svg").remove();
 
+        const scale = 10;
         const svg = d3
           .select("#container")
           .append("svg")
-          .attr("viewBox", "-1 -1 1600 1600")
-          .attr("width", 1600)
-          .attr("height", 1600);
+          .attr("viewBox", `-1 -1 ${scale * size} ${scale * size}`)
+          .attr("width", scale * size)
+          .attr("height", scale * size);
 
-        const scale = 10;
         svg
           .append("g")
           .selectAll()

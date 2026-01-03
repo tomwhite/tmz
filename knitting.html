@@ -27,6 +27,7 @@
     <script type="text/javascript">
       function tmz(k, blockSize) {
         const n = 2 * k;
+        const size = 2 ** k;
         const tm = thue_morse_seq(n);
 
         // square of size 2^k
@@ -34,13 +35,13 @@
 
         d3.select("svg").remove();
 
+        const scale = blockSize * 10;
+        const margin = scale * 3; // for labels
         const svg = d3
           .select("#container")
           .append("svg")
-          .attr("width", 1600)
-          .attr("height", 1600);
-
-        const scale = blockSize * 10;
+          .attr("width", scale * size + margin)
+          .attr("height", scale * size + margin);
         svg
           .append("g")
           .attr("fill", "steelblue")
