@@ -16,6 +16,7 @@
         const svg = d3
           .select(`#container-${suffix}`)
           .append("svg")
+          .attr("viewBox", `-1 -1 ${s + 2} ${s + 2}`)
           .attr("width", s)
           .attr("height", s)
           .append("g")
