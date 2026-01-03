@@ -46,7 +46,8 @@
           .attr("fill", "none")
           .attr("stroke", "black")
           .attr("stroke-width", 1)
-          .attr("stroke-opacity", 1);
+          .attr("stroke-opacity", 1)
+          .attr("pointer-events", "none");
 
         const highlight = "red"; // TODO: move
         const strokeWidth = 2;
@@ -60,7 +61,8 @@
           .attr("y", 0)
           .attr("fill", "none")
           .attr("stroke", highlight)
-          .attr("stroke-width", 2);
+          .attr("stroke-width", 2)
+          .attr("pointer-events", "none");
         svg
           .append("g")
           .append("rect")
@@ -71,7 +73,8 @@
           .attr("y", 0)
           .attr("fill", "none")
           .attr("stroke", highlight)
-          .attr("stroke-width", 2);
+          .attr("stroke-width", 2)
+          .attr("pointer-events", "none");
         svg
           .append("g")
           .append("rect")
@@ -82,7 +85,8 @@
           .attr("y", 0)
           .attr("fill", "none")
           .attr("stroke", highlight)
-          .attr("stroke-width", 2);
+          .attr("stroke-width", 2)
+          .attr("pointer-events", "none");
 
         let z = 0;
         let ticker = d3.interval(() => {
@@ -103,7 +107,7 @@
         }, 750);
       }
 
-      const k = 4;
+      const k = 5;
       tmz(k);
     </script>
   </body>

@@ -6,6 +6,10 @@
   </head>
 
   <body>
+    <div>
+      <input type="range" id="k_input" name="k" min="0" max="6" value="4" />
+      <label for="k"><i>k</i>=<output id="k_output">4</output></label>
+    </div>
     <div id="container"></div>
     <script type="text/javascript">
       function tmz(k) {
@@ -69,7 +73,8 @@
           .attr("fill", "none")
           .attr("stroke", "black")
           .attr("stroke-width", 1)
-          .attr("stroke-opacity", 1);
+          .attr("stroke-opacity", 1)
+          .attr("pointer-events", "none");
 
         const highlight = "red"; // TODO: move
         const strokeWidth = 2;
@@ -84,6 +89,7 @@
           .attr("fill", "none")
           .attr("stroke", highlight)
           .attr("stroke-width", 2)
+          .attr("pointer-events", "none")
           .attr("visibility", "hidden");
         svg
           .append("g")
@@ -96,6 +102,7 @@
           .attr("fill", "none")
           .attr("stroke", highlight)
           .attr("stroke-width", 2)
+          .attr("pointer-events", "none")
           .attr("visibility", "hidden");
         svg
           .append("g")
@@ -108,10 +115,19 @@
           .attr("fill", "none")
           .attr("stroke", highlight)
           .attr("stroke-width", 2)
+          .attr("pointer-events", "none")
           .attr("visibility", "hidden");
       }
 
-      const k = 5;
+      const input = document.querySelector("#k_input");
+      const output = document.querySelector("#k_output");
+      input.addEventListener("input", (event) => {
+        const k = event.target.value;
+        output.value = k;
+        tmz(k);
+      });
+
+      const k = input.value;
       tmz(k);
     </script>
   </body>
