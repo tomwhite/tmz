@@ -25,9 +25,14 @@
         >block size=<output id="block_size_output">1</output></label
       >
     </div>
+    <div>
+      <input type="color" id="foreground" name="foreground" value="#4682b4" />
+      <input type="color" id="background" name="background" value="#ffffff" />
+    </div>
+    <p></p>
     <div id="container"></div>
     <script type="text/javascript">
-      function tmz(k, blockSize) {
+      function tmz(k, blockSize, foreground, background) {
         const n = 2 * k;
         const size = 2 ** k;
 
@@ -45,7 +50,18 @@
           .attr("height", scale * size + margin);
         svg
           .append("g")
-          .attr("fill", "steelblue")
+          .attr("id", "background-rect")
+          .attr("fill", background)
+          .attr("fill-opacity", 1)
+          .append("rect")
+          .attr("x", 0)
+          .attr("width", scale * size)
+          .attr("y", 0)
+          .attr("height", scale * size);
+        svg
+          .append("g")
+          .attr("id", "pattern")
+          .attr("fill", foreground)
           .attr("fill-opacity", 1)
           .selectAll()
           .data(data)
@@ -74,7 +90,7 @@
               .axisRight(yScale)
               .tickFormat(d3.format(",d"))
               .tickValues(tickValues)
-              .tickSize(0)
+              .tickSize(0),
           );
         svg
           .append("g")
@@ -84,7 +100,7 @@
               .axisBottom(yScale)
               .tickFormat(d3.format(",d"))
               .tickValues(tickValues)
-              .tickSize(0)
+              .tickSize(0),
           );
 
         const gridTickValues = d3.range(0, blockSize * 2 ** k + 1, 1);
@@ -119,11 +135,14 @@
       const block_size_input = document.querySelector("#block_size_input");
       const block_size_output = document.querySelector("#block_size_output");
 
+      const foreground = document.querySelector("#foreground");
+      const background = document.querySelector("#background");
+
       k_input.addEventListener("input", (event) => {
         const k = event.target.value;
         k_output.value = k;
         size_output.value = 2 ** k;
-        tmz(k, block_size_output.value);
+        tmz(k, block_size_output.value, foreground.value, background.value);
       });
 
       // TODO: naming
@@ -131,11 +150,28 @@
         const value = event.target.value;
         block_size_output.value = value;
         // TODO: update better
-        tmz(k_input.value, block_size_output.value);
+        tmz(
+          k_input.value,
+          block_size_output.value,
+          foreground.value,
+          background.value,
+        );
       });
 
+      function updateForeground(event) {
+        d3.select("#pattern").attr("fill", event.target.value);
+      }
+      foreground.addEventListener("input", updateForeground);
+      foreground.addEventListener("change", updateForeground);
+
+      function updateBackground(event) {
+        d3.select("#background-rect").attr("fill", event.target.value);
+      }
+      background.addEventListener("input", updateBackground);
+      background.addEventListener("change", updateBackground);
+
       const k = k_input.value;
-      tmz(k, block_size_output.value);
+      tmz(k, block_size_output.value, foreground.value, background.value);
     </script>
   </body>
 </html>
