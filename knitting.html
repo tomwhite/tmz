@@ -35,6 +35,8 @@
       function tmz(k, blockSize, foreground, background) {
         const n = 2 * k;
         const size = 2 ** k;
+        const xSize = size;
+        const ySize = size;
 
         // square of size 2^k
         const data = thue_morse_coords_z(n);
@@ -46,8 +48,8 @@
         const svg = d3
           .select("#container")
           .append("svg")
-          .attr("width", scale * size + margin)
-          .attr("height", scale * size + margin);
+          .attr("width", scale * xSize + margin)
+          .attr("height", scale * ySize + margin);
         svg
           .append("g")
           .attr("id", "background-rect")
@@ -55,9 +57,9 @@
           .attr("fill-opacity", 1)
           .append("rect")
           .attr("x", 0)
-          .attr("width", scale * size)
+          .attr("width", scale * xSize)
           .attr("y", 0)
-          .attr("height", scale * size);
+          .attr("height", scale * ySize);
         svg
           .append("g")
           .attr("id", "pattern")
@@ -74,57 +76,59 @@
         // TODO: rename
         const xScale = d3
           .scaleLinear()
-          .domain([0.5, blockSize * 2 ** k + 0.5])
-          .range([0, scale * 2 ** k]);
+          .domain([0.5, blockSize * xSize + 0.5])
+          .range([scale * xSize, 0]);
         const yScale = d3
           .scaleLinear()
-          .domain([0.5, blockSize * 2 ** k + 0.5])
-          .range([scale * 2 ** k, 0]);
+          .domain([0.5, blockSize * ySize + 0.5])
+          .range([scale * ySize, 0]);
 
-        const tickValues = d3.range(2, blockSize * 2 ** k + 2, 2);
+        const xTickValues = d3.range(2, blockSize * xSize + 2, 2);
+        const yTickValues = d3.range(2, blockSize * ySize + 2, 2);
         svg
           .append("g")
-          .attr("transform", `translate(${scale * 2 ** k},0)`) // TODO: fix
+          .attr("transform", `translate(${scale * xSize},0)`) // TODO: fix
           .call(
             d3
               .axisRight(yScale)
               .tickFormat(d3.format(",d"))
-              .tickValues(tickValues)
+              .tickValues(yTickValues)
               .tickSize(0),
           );
         svg
           .append("g")
-          .attr("transform", `translate(0,${scale * 2 ** k})`) // TODO: fix
+          .attr("transform", `translate(0,${scale * ySize})`) // TODO: fix
           .call(
             d3
-              .axisBottom(yScale)
+              .axisBottom(xScale)
               .tickFormat(d3.format(",d"))
-              .tickValues(tickValues)
+              .tickValues(xTickValues)
               .tickSize(0),
           );
 
-        const gridTickValues = d3.range(0, blockSize * 2 ** k + 1, 1);
+        const xGridTickValues = d3.range(0, blockSize * xSize + 1, 1);
+        const yGridTickValues = d3.range(0, blockSize * ySize + 1, 1);
         const xScale2 = d3
           .scaleLinear()
-          .domain([0, blockSize * 2 ** k])
-          .range([0, scale * 2 ** k]);
+          .domain([0, blockSize * xSize])
+          .range([0, scale * xSize]);
         const xGrid = d3
           .axisBottom() // TODO: inconsistent with yGrid...
           .scale(xScale2) // TODO: rename
           .tickFormat("")
-          .tickValues(gridTickValues)
-          .tickSizeInner(scale * 2 ** k);
+          .tickValues(xGridTickValues)
+          .tickSizeInner(scale * ySize);
         svg.append("g").call(xGrid);
         const yScale2 = d3
           .scaleLinear()
-          .domain([0, blockSize * 2 ** k])
-          .range([scale * 2 ** k, 0]);
+          .domain([0, blockSize * ySize])
+          .range([scale * ySize, 0]);
         const yGrid = d3
           .axisRight()
           .scale(yScale2)
           .tickFormat("")
-          .tickValues(gridTickValues)
-          .tickSizeInner(scale * 2 ** k);
+          .tickValues(yGridTickValues)
+          .tickSizeInner(scale * xSize);
         svg.append("g").call(yGrid);
       }
 
