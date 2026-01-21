@@ -48,6 +48,24 @@ function thue_morse_coords_z(n) {
   return data;
 }
 
+function thue_morse_coords_z2(m, n) {
+  // map the Thue-Morse sequence onto a z-order curve
+  const tm = thue_morse_seq(2 * Math.ceil(Math.log2(Math.max(m, n))));
+  let data = [];
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      let x = i;
+      let y = j;
+      let z = interleave(x, y);
+      if (tm[z] == 1) {
+        data.push({ x: x, y: y });
+      }
+    }
+  }
+  return data;
+}
+
 function thue_morse_coords_z_values(n) {
   // map the Thue-Morse sequence onto a z-order curve
   const tm = thue_morse_seq(n);

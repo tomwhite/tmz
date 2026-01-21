@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+    <script src="tmz.js"></script>
+  </head>
+
+  <body>
+    <div>
+      <input type="range" id="x_input" name="x" min="1" max="64" value="16" />
+      <label for="x"><i>x</i>=<output id="x_output">16</output></label>
+    </div>
+    <div>
+      <input type="range" id="y_input" name="y" min="1" max="64" value="16" />
+      <label for="y"><i>y</i>=<output id="y_output">16</output></label>
+    </div>
+    <div>
+      <input
+        type="range"
+        id="block_size_input"
+        name="block_size"
+        min="1"
+        max="8"
+        value="1"
+      />
+      <label for="block_size"
+        >block size=<output id="block_size_output">1</output></label
+      >
+    </div>
+    <div>
+      <input type="color" id="foreground" name="foreground" value="#4682b4" />
+      <input type="color" id="background" name="background" value="#ffffff" />
+    </div>
+    <p></p>
+    <div id="container"></div>
+    <script type="text/javascript">
+      function tmz(x, y, blockSize, foreground, background) {
+        // const n = 2 * k;
+        // const size = 2 ** k;
+        const xSize = x;
+        const ySize = y;
+
+        const data = thue_morse_coords_z2(x, y);
+
+        d3.select("svg").remove();
+
+        const scale = blockSize * 10;
+        const margin = scale * 3; // for labels
+        const svg = d3
+          .select("#container")
+          .append("svg")
+          .attr("width", scale * xSize + margin)
+          .attr("height", scale * ySize + margin);
+        svg
+          .append("g")
+          .attr("id", "background-rect")
+          .attr("fill", background)
+          .attr("fill-opacity", 1)
+          .append("rect")
+          .attr("x", 0)
+          .attr("width", scale * xSize)
+          .attr("y", 0)
+          .attr("height", scale * ySize);
+        svg
+          .append("g")
+          .attr("id", "pattern")
+          .attr("fill", foreground)
+          .attr("fill-opacity", 1)
+          .selectAll()
+          .data(data)
+          .join("rect")
+          .attr("x", (d) => scale * d.x)
+          .attr("width", scale)
+          .attr("y", (d) => scale * d.y)
+          .attr("height", scale);
+
+        // TODO: rename
+        const xScale = d3
+          .scaleLinear()
+          .domain([0.5, blockSize * xSize + 0.5])
+          .range([scale * xSize, 0]);
+        const yScale = d3
+          .scaleLinear()
+          .domain([0.5, blockSize * ySize + 0.5])
+          .range([scale * ySize, 0]);
+
+        const xTickValues = d3.range(2, blockSize * xSize + 2, 2);
+        const yTickValues = d3.range(2, blockSize * ySize + 2, 2);
+        svg
+          .append("g")
+          .attr("transform", `translate(${scale * xSize},0)`) // TODO: fix
+          .call(
+            d3
+              .axisRight(yScale)
+              .tickFormat(d3.format(",d"))
+              .tickValues(yTickValues)
+              .tickSize(0),
+          );
+        svg
+          .append("g")
+          .attr("transform", `translate(0,${scale * ySize})`) // TODO: fix
+          .call(
+            d3
+              .axisBottom(xScale)
+              .tickFormat(d3.format(",d"))
+              .tickValues(xTickValues)
+              .tickSize(0),
+          );
+
+        const xGridTickValues = d3.range(0, blockSize * xSize + 1, 1);
+        const yGridTickValues = d3.range(0, blockSize * ySize + 1, 1);
+        const xScale2 = d3
+          .scaleLinear()
+          .domain([0, blockSize * xSize])
+          .range([0, scale * xSize]);
+        const xGrid = d3
+          .axisBottom() // TODO: inconsistent with yGrid...
+          .scale(xScale2) // TODO: rename
+          .tickFormat("")
+          .tickValues(xGridTickValues)
+          .tickSizeInner(scale * ySize);
+        svg.append("g").call(xGrid);
+        const yScale2 = d3
+          .scaleLinear()
+          .domain([0, blockSize * ySize])
+          .range([scale * ySize, 0]);
+        const yGrid = d3
+          .axisRight()
+          .scale(yScale2)
+          .tickFormat("")
+          .tickValues(yGridTickValues)
+          .tickSizeInner(scale * xSize);
+        svg.append("g").call(yGrid);
+      }
+
+      const k_input = document.querySelector("#k_input");
+      const k_output = document.querySelector("#k_output");
+      const size_output = document.querySelector("#size_output");
+
+      const x_input = document.querySelector("#x_input");
+      const x_output = document.querySelector("#x_output");
+
+      const y_input = document.querySelector("#y_input");
+      const y_output = document.querySelector("#y_output");
+
+      const block_size_input = document.querySelector("#block_size_input");
+      const block_size_output = document.querySelector("#block_size_output");
+
+      const foreground = document.querySelector("#foreground");
+      const background = document.querySelector("#background");
+
+      x_input.addEventListener("input", (event) => {
+        const x = event.target.value;
+        x_output.value = x;
+        tmz(
+          x_input.value,
+          y_input.value,
+          block_size_output.value,
+          foreground.value,
+          background.value,
+        );
+      });
+
+      y_input.addEventListener("input", (event) => {
+        const y = event.target.value;
+        y_output.value = y;
+        tmz(
+          x_input.value,
+          y_input.value,
+          block_size_output.value,
+          foreground.value,
+          background.value,
+        );
+      });
+
+      // TODO: naming
+      block_size_input.addEventListener("input", (event) => {
+        const value = event.target.value;
+        block_size_output.value = value;
+        // TODO: update better
+        tmz(
+          x_input.value,
+          y_input.value,
+          block_size_output.value,
+          foreground.value,
+          background.value,
+        );
+      });
+
+      function updateForeground(event) {
+        d3.select("#pattern").attr("fill", event.target.value);
+      }
+      foreground.addEventListener("input", updateForeground);
+      foreground.addEventListener("change", updateForeground);
+
+      function updateBackground(event) {
+        d3.select("#background-rect").attr("fill", event.target.value);
+      }
+      background.addEventListener("input", updateBackground);
+      background.addEventListener("change", updateBackground);
+
+      tmz(
+        x_input.value,
+        y_input.value,
+        block_size_output.value,
+        foreground.value,
+        background.value,
+      );
+    </script>
+  </body>
+</html>
