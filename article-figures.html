@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+    <script src="tmz.js"></script>
+    <script src="article.js"></script>
+  </head>
+
+  <body>
+    <h3>Z-order curve</h3>
+    <div id="container-z-curve"></div>
+
+    <h3>TM on a Z-order curve</h3>
+    <p>T<sub>0</sub> = 0</p>
+    <div id="container-T0"></div>
+
+    <p>T<sub>1</sub> = 01</p>
+    <div id="container-T1"></div>
+
+    <p>T<sub>2</sub> = 0110</p>
+    <div id="container-T2"></div>
+
+    <p>T<sub>3</sub> = 01101001</p>
+    <div id="container-T3"></div>
+
+    <p>T<sub>4</sub> = 0110100110010110</p>
+    <div id="container-T4"></div>
+
+    <script type="text/javascript">
+      draw_z_curve("z-curve", 4)
+      draw_tmz("T0", 0);
+      draw_tmz("T1", 1);
+      draw_tmz("T2", 2);
+      draw_tmz("T3", 3);
+      draw_tmz("T4", 4);
+    </script>
+  </body>
+</html>

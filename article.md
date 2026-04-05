@@ -39,7 +39,7 @@ So $t_0 = 0$, $t_1 = 1$, $t_2 = 1$, $t_3 = 0$, $t_4 = 1$, ...
 
 A Z-order curve is a space-filling curve, where the Z-value of a point which represents the (integral) distance along the curve is found by interleaving the binary coordinate values of the point.
 
-For example, the Z-curve for the two dimensional case we are concerned with here looks like this for Z-values from 0 to 15.
+Z-order curves can be defined for any number of dimensions, but here we are only concerned with the two dimensional case. This is what the (two-dimensional) curve looks like for Z-values from 0 to 15.
 
 [TODO: see "Z-order curve" figure. Need to add the binary break down?]
 
