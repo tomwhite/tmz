@@ -129,10 +129,11 @@
       }
 
       // TODO: rename
-      function highlight_(suffix, k) {
+      function highlight_(suffix, k, showLast) {
         const size = 2 ** k;
         const s = scale * size;
-        for (let i = 0; i < 4; i++) {
+        const bound = showLast ? 4 : 3;
+        for (let i = 1; i < bound; i++) {
           d3.selectAll(`#tmz-${k}-${i}-${suffix}`)
             .append("rect")
             .attr("width", s)
@@ -201,25 +202,25 @@
 
       draw_tmz("1a", 1);
       expand("1a", 0);
-      highlight_("1a", 0);
+      highlight_("1a", 0, true);
 
       draw_tmz("1b", 1);
       expand("1b", 0);
       invert("1b", 0);
-      highlight_("1b", 0);
+      highlight_("1b", 0, false);
 
       draw_tmz("2a", 2);
       expand("2a", 0);
       invert("2a", 0);
       expand("2a", 1);
-      highlight_("2a", 1);
+      highlight_("2a", 1, true);
 
       draw_tmz("2b", 2);
       expand("2b", 0);
       invert("2b", 0);
       expand("2b", 1);
       invert("2b", 1);
-      highlight_("2b", 1);
+      highlight_("2b", 1, false);
 
       draw_tmz("3a", 3);
       expand("3a", 0);
@@ -227,7 +228,7 @@
       expand("3a", 1);
       invert("3a", 1);
       expand("3a", 2);
-      highlight_("3a", 2);
+      highlight_("3a", 2, true);
 
       draw_tmz("3b", 3);
       expand("3b", 0);
@@ -236,7 +237,7 @@
       invert("3b", 1);
       expand("3b", 2);
       invert("3b", 2);
-      highlight_("3b", 2);
+      highlight_("3b", 2, false);
     </script>
   </body>
 </html>

@@ -89,9 +89,9 @@
           invertRecursive(square1);
         }, 750);
 
-        // highlight constituent squares for a short while
+        // highlight new squares for a short while
         const t = d3.transition().duration(1500).ease(d3.easeLinear);
-        for (let i = 0; i < 2; i++) {
+        for (let i = 1; i < 2; i++) {
           d3.selectAll(`#tmz-${k}-${i}`)
             .append("rect")
             .attr("width", sx)
