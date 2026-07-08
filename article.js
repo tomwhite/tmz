@@ -43,7 +43,7 @@ function highlight_z_connection(suffix, x0, y0, x1, y1) {
     .attr("pointer-events", "none");
 }
 
-function draw_tmz(suffix, i, maxI = i, showValues=false, showZCurve=false) {
+function draw_tmz(suffix, i, maxI = i, showValues=false, showZCurve=false, showValuewRow=-1) {
   const w = maxI % 2 == 0 ? 2 ** (maxI / 2) : 2 ** ((maxI + 1) / 2);
   const h = maxI % 2 == 0 ? 2 ** (maxI / 2) : 2 ** ((maxI - 1) / 2);
   const z = 2 ** i - 1;
@@ -81,6 +81,7 @@ function draw_tmz(suffix, i, maxI = i, showValues=false, showZCurve=false) {
       .join("text")
       .attr("x", (d) => scale * (d.x + 0.5))
       .attr("y", (d) => scale * (d.y + 0.5))
+      .attr("visibility", (d) => (showValuewRow == -1 || d.y == showValuewRow) ? "visible" : "hidden")
       .text((d) => d.value);
   }
   if (showZCurve) {
