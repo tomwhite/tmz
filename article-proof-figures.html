@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>TMZ</title>
+    <script src="d3.v7.min.js"></script>
+    <script src="tmz.js"></script>
+    <script src="article.js"></script>
+  </head>
+
+  <body>
+    <h3>Proof that top-row is Thue-Morse</h3>
+    <div id="container-T4"></div>
+
+    <p></p>
+    <div id="container-T4-values"></div>
+
+    <script type="text/javascript">
+      draw_tmz("T4", 4, 5, false, true);
+      expand("T4", 4);
+      invert("T4", 4);
+      highlight_("T4", 4);
+      highlight_z_connection("T4", 3, 3, 4, 0);
+
+      draw_tmz("T4-values", 4, 5, false, false);
+      expand("T4-values", 4);
+      invert("T4-values", 4);
+    </script>
+  </body>
+</html>

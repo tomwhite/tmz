@@ -27,6 +27,22 @@ function draw_z_curve(suffix, i) {
     .attr("pointer-events", "none");
 }
 
+function highlight_z_connection(suffix, x0, y0, x1, y1) {
+  const scale = 25;
+  d3
+    .select(`#root-${suffix}`)
+    .append("g")
+    .attr("transform", `translate(${scale / 2},${scale / 2})`)
+    .append("path")
+    .attr("d", `M ${x0 * scale} ${y0 * scale} L ${x1 * scale} ${y1 * scale}`)
+    .attr("fill", "none")
+    .attr("stroke", "blue")
+    .attr("stroke-width", 4)
+    .attr("stroke-opacity", 1)
+    .attr("stroke-linejoin", "round")
+    .attr("pointer-events", "none");
+}
+
 function draw_tmz(suffix, i, maxI = i, showValues=false, showZCurve=false) {
   const w = maxI % 2 == 0 ? 2 ** (maxI / 2) : 2 ** ((maxI + 1) / 2);
   const h = maxI % 2 == 0 ? 2 ** (maxI / 2) : 2 ** ((maxI - 1) / 2);

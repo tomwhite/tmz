@@ -73,7 +73,7 @@ For the inductive step, start with a square with side $2^k$. Because of the way 
 
 [TODO: diagram]
 
-The values in the square are $T_{2k}$, and because of the way TMZ is constructed, the values in the copy of the square are the negation of $T_{2k}$.
+The values in the square are $T_{2k}$, and because of the way TMZ is constructed, the values in the copy of the square are the negation of $T_{2k}$, or $\overline{T}_{2k}$.
 
 [TODO: diagram]
 
