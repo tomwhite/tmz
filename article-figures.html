@@ -7,6 +7,9 @@
   </head>
 
   <body>
+    <h3>The TMZ pattern</h3>
+    <div id="container-tmz"></div>
+
     <h3>Z-order curve</h3>
     <div id="container-z-curve"></div>
 
@@ -27,12 +30,17 @@
     <div id="container-T4"></div>
 
     <script type="text/javascript">
+      draw_tmz("tmz", 8);
       draw_z_curve("z-curve", 4)
-      draw_tmz("T0", 0);
-      draw_tmz("T1", 1);
-      draw_tmz("T2", 2);
-      draw_tmz("T3", 3);
-      draw_tmz("T4", 4);
+      draw_tmz("T0", 0, 0, true, true);
+      draw_tmz("T1", 1, 1, true, true);
+      draw_tmz("T2", 2, 2, true, true);
+      draw_tmz("T3", 3, 3, true, true);
+      draw_tmz("T4", 4, 4, true, true);
     </script>
+
+    <h3>Other</h3>
+
+    <p>See also <a href="article-recursive-figures.html">Recursive Expansion</h3></p>
   </body>
 </html>

@@ -7,6 +7,7 @@
   </head>
 
   <body>
+    <h3>Recursive Expansion</h3>
     <p>To generate the TMZ pattern, start with a single light cell (0), and proceed in two steps:</p>
 
     <div id="container-0"></div>
@@ -37,7 +38,7 @@
 
     <h3>Repeat</h3>
 
-    <p>Expand:</p>
+    <p>Expand right:</p>
 
     <div id="container-3a"></div>
 
@@ -47,7 +48,7 @@
 
     <h3>Repeat again</h3>
 
-    <p>Expand:</p>
+    <p>Expand down:</p>
 
     <div id="container-4a"></div>
 
@@ -64,31 +65,31 @@
     <p>See an <a href="recursive-2-step.html">animation</a> of this expansion.</p>
   
     <script type="text/javascript">
-      draw_tmz("0", 0);
+      draw_tmz("0", 0, 0, true);
 
-      draw_tmz("1a", 0, 1);
+      draw_tmz("1a", 0, 1, true);
       expand("1a", 0);
       highlight_("1a", 0);
 
-      draw_tmz("1b", 0, 1);
+      draw_tmz("1b", 0, 1, true);
       expand("1b", 0);
       invert("1b", 0);
       highlight_("1b", 0);
 
-      draw_tmz("2a", 0, 2);
+      draw_tmz("2a", 0, 2, true);
       expand("2a", 0);
       invert("2a", 0);
       expand("2a", 1);
       highlight_("2a", 1);
 
-      draw_tmz("2b", 0, 2);
+      draw_tmz("2b", 0, 2, true);
       expand("2b", 0);
       invert("2b", 0);
       expand("2b", 1);
       invert("2b", 1);
       highlight_("2b", 1);
 
-      draw_tmz("3a", 0, 3);
+      draw_tmz("3a", 0, 3, true);
       expand("3a", 0);
       invert("3a", 0);
       expand("3a", 1);
@@ -96,7 +97,7 @@
       expand("3a", 2);
       highlight_("3a", 2);
 
-      draw_tmz("3b", 0, 3);
+      draw_tmz("3b", 0, 3, true);
       expand("3b", 0);
       invert("3b", 0);
       expand("3b", 1);
@@ -105,7 +106,7 @@
       invert("3b", 2);
       highlight_("3b", 2);
 
-      draw_tmz("4a", 0, 4);
+      draw_tmz("4a", 0, 4, true);
       expand("4a", 0);
       invert("4a", 0);
       expand("4a", 1);
@@ -115,7 +116,7 @@
       expand("4a", 3);
       highlight_("4a", 3);
 
-      draw_tmz("4b", 0, 4);
+      draw_tmz("4b", 0, 4, true);
       expand("4b", 0);
       invert("4b", 0);
       expand("4b", 1);

@@ -57,7 +57,7 @@ I call this object "TMZ". And $tmz_{i,j}$ is the value at [TODO: rows and cols?]
 
 The definition of the Thue-Moore sequence when translated into the Z-order curve view, gives the following way of recursively generating the pattern.
 
-[TODO: embed presentation from recursive-2-step-presentation.html. Need to change to have 0 and 1 not "light" and "dark", so it looks like TM on a Z-order curve]
+[TODO: embed presentation from article-recursive-figures.html. Does it need Z-order curves? Probably not.]
 
 ## TMZ is a catalog of TM sequences
 

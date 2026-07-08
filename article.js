@@ -27,7 +27,7 @@ function draw_z_curve(suffix, i) {
     .attr("pointer-events", "none");
 }
 
-function draw_tmz(suffix, i, maxI = i) {
+function draw_tmz(suffix, i, maxI = i, showValues=false, showZCurve=false) {
   const w = maxI % 2 == 0 ? 2 ** (maxI / 2) : 2 ** ((maxI + 1) / 2);
   const h = maxI % 2 == 0 ? 2 ** (maxI / 2) : 2 ** ((maxI - 1) / 2);
   const z = 2 ** i - 1;
@@ -54,30 +54,33 @@ function draw_tmz(suffix, i, maxI = i) {
     .attr("width", scale)
     .attr("y", (d) => scale * d.y)
     .attr("height", scale);
-  svg
-    .append("g")
-    .attr("font-size", 24)
-    .attr("text-anchor", "middle")
-    .attr("dominant-baseline", "central")
-    .selectAll()
-    .data(data)
-    .join("text")
-    .attr("x", (d) => scale * (d.x + 0.5))
-    .attr("y", (d) => scale * (d.y + 0.5))
-    .text((d) => d.value);
-
-  svg
-    .append("g")
-    .attr("transform", `translate(${scale / 2},${scale / 2})`)
-    .append("path")
-    .attr("id", "tmz-z-curve")
-    .attr("d", z_curve_path(z, scale))
-    .attr("fill", "none")
-    .attr("stroke", "blue")
-    .attr("stroke-width", 2)
-    .attr("stroke-opacity", 0.5)
-    .attr("stroke-linejoin", "round")
-    .attr("pointer-events", "none");
+  if (showValues) {
+    svg
+      .append("g")
+      .attr("font-size", 24)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "central")
+      .selectAll()
+      .data(data)
+      .join("text")
+      .attr("x", (d) => scale * (d.x + 0.5))
+      .attr("y", (d) => scale * (d.y + 0.5))
+      .text((d) => d.value);
+  }
+  if (showZCurve) {
+    svg
+      .append("g")
+      .attr("transform", `translate(${scale / 2},${scale / 2})`)
+      .append("path")
+      .attr("id", "tmz-z-curve")
+      .attr("d", z_curve_path(z, scale))
+      .attr("fill", "none")
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2)
+      .attr("stroke-opacity", 0.5)
+      .attr("stroke-linejoin", "round")
+      .attr("pointer-events", "none");
+  }
 }
 
 function expand(suffix, k) {
