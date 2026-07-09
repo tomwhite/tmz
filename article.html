@@ -16,6 +16,16 @@
     <script src="d3.v7.min.js"></script>
     <script src="tmz.js"></script>
     <script src="article.js"></script>
+    <style>
+        table {
+        border-collapse: collapse;
+        }
+        td,
+        th {
+        border: 1px solid black;
+        padding: 10px 20px;
+        }
+    </style>
   </head>
 
   <body>
@@ -273,10 +283,58 @@
     <p>
         Now consider the parity combinations of $b[i]$ and $b[j]$. If both are even then since $2n$ is even $b[i \oplus j]$ is even.
         If both are odd, then $b[i \oplus j]$ is even. And if one is even and the other is odd, then $b[i \oplus j]$ is odd.
+        This is summarised in the table, along with values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b[x]$ is even and 1 if it is odd.
     </p>
 
-    <p>This is equivalent to the statement $t_i \oplus t_j = t_{i \oplus j}$, which proves the lemma. [TODO: need a bit more explanation.]</p>
+    <table>
+        <tr>
+            <th>$b[i]$</th>
+            <th>$b[j]$</th>
+            <th>$b[i \oplus j]$</th>
+            <th>$t_i$</th>
+            <th>$t_j$</th>
+            <th>$t_{i \oplus j}$</th>
+            <th>$t_i \oplus t_j$</th>
+        </tr>
+        <tr>
+            <td>even</td>
+            <td>even</td>
+            <td>even</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>even</td>
+            <td>odd</td>
+            <td>odd</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>odd</td>
+            <td>even</td>
+            <td>odd</td>
+            <td>1</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>odd</td>
+            <td>odd</td>
+            <td>even</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </table>
 
+    <p>The final column of the table shows $t_i \oplus t_j$, which is the same as $t_{i \oplus j}$ in each case, which proves the lemma.</p>
 
     <p>For example, if $i=011_{2}$ and $j=110_{2}$, then there is $n=1$ bit which are both 1s (the second bit), and</p>
 
@@ -313,7 +371,7 @@
 
     <p>As a result of the theorem, it is easy to see that TMZ has a reflective symmetry along the diagonal, since $t_{i \oplus j}$ is symmetrical in $i$ and $j$.</p>
 
-    <p>[TODO: proof showed along the way that $tmz_{i,j} = t_i \oplus t_j$, which means you can XOR the top row with the left col to get a value.]</p>
+    <p>[TODO: proof showed along the way that $tmz_{i,j} = t_i \oplus t_j$, which means you can XOR a value in the top row with a value in the left col to get the value at the intersection.]</p>
 
     <h2>Knitting</h2>
 
