@@ -269,28 +269,28 @@
 
     <p>To prove the lemma, consider the number of one bits in $i$ and $j$, and look at the effect of the $\oplus$ operator.</p>
 
-    <p>Call the number of one bits in $i$, $b[i]$. If there are $n$ bits which are both 1s in $i$ and $j$, then</p>
+    <p>Call the number of one bits in $i$, $b(i)$. If there are $n$ bits which are both 1s in $i$ and $j$, then</p>
 
     <p>
     $$
     \begin{align}
-    b[i \oplus j] &= b[i] - n + b[j] - n\\
-    &= b[i] + b[j] - 2n
+    b(i \oplus j) &= b(i) - n + b(j) - n\\
+    &= b(i) + b(j) - 2n
     \end{align}
     $$
     </p>
 
     <p>
-        Now consider the parity combinations of $b[i]$ and $b[j]$. If both are even then since $2n$ is even $b[i \oplus j]$ is even.
-        If both are odd, then $b[i \oplus j]$ is even. And if one is even and the other is odd, then $b[i \oplus j]$ is odd.
-        This is summarised in the table, along with values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b[x]$ is even and 1 if it is odd.
+        Now consider the parity combinations of $b(i)$ and $b(j)$. If both are even then since $2n$ is even $b(i \oplus j)$ is even.
+        If both are odd, then $b(i \oplus j)$ is even. And if one is even and the other is odd, then $b(i \oplus j)$ is odd.
+        This is summarised in the table, along with values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b(x)$ is even and 1 if it is odd (since $t_x = b(x) \mod 2$).
     </p>
 
     <table>
         <tr>
-            <th>$b[i]$</th>
-            <th>$b[j]$</th>
-            <th>$b[i \oplus j]$</th>
+            <th>$b(i)$</th>
+            <th>$b(j)$</th>
+            <th>$b(i \oplus j)$</th>
             <th>$t_i$</th>
             <th>$t_j$</th>
             <th>$t_{i \oplus j}$</th>
@@ -339,13 +339,13 @@
     <p>For example, if $i=011_{2}$ and $j=110_{2}$, then there is $n=1$ bit which are both 1s (the second bit), and</p>
 
     <p>
-        $$b[i \oplus j] = b[101_{2}] = 2$$
+        $$b(i \oplus j) = b(101_{2}) = 2$$
     </p>
 
     and
 
     <p>
-        $$b[i] - n + b[j] - n = b[011_{2}] - 1 + b[101_{2}] - 1 = 2 - 1 + 2 - 1 = 2$$
+        $$b(i) - n + b(j) - n = b(011_{2}) - 1 + b(101_{2}) - 1 = 2 - 1 + 2 - 1 = 2$$
     </p>
 
     <p>Now we can prove the theorem:</p>
