@@ -35,13 +35,16 @@
       Some things in mathematics seem to appear everywhere. Numbers like $\pi$,
       e, or the Fibonacci sequence often pop up when you are least expecting
       them to. Although not quite as ubiquitous, the Thue-Morse sequence is one
-      of those things that once you know about it, seems to appear at every
-      turn.
+      of those things that once you know about it, seems to appear at the most
+      unlikely turn.
     </p>
+
+    <h2>The Thue-Morse sequence</h2>
+
     <p>
-      Thue-Morse sequence is an infinite binary sequence, which means it's made
-      up of only zeros and ones. It starts $0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1,
-      ...$ There are many ways to define it, here's one:
+      The Thue-Morse sequence is an infinite binary sequence, which means it's
+      made up of only zeros and ones. It starts $0, 1, 1, 0, 1, 0, 0, 1, 1, 0,
+      0, 1, ...$ There are many ways to define it, here's one:
     </p>
     <p>
       $t_n$ is the number of bits modulo 2 in $n$, when $n$ is written in base 2
@@ -64,6 +67,21 @@
         <td>11</td>
       </tr>
       <tr>
+        <td>$n_2$</td>
+        <td>0</td>
+        <td>1</td>
+        <td>10</td>
+        <td>11</td>
+        <td>100</td>
+        <td>101</td>
+        <td>110</td>
+        <td>111</td>
+        <td>1000</td>
+        <td>1001</td>
+        <td>1010</td>
+        <td>1011</td>
+      </tr>
+      <tr>
         <td>$t_n$</td>
         <td>0</td>
         <td>1</td>
@@ -80,8 +98,8 @@
       </tr>
     </table>
     <p>
-      So for example $11 = 8 + 2, 1$ or $1011$ in base 2. The sum of the bits is
-      3, so $t_{11} = 1$.
+      So for example $11 = 8 + 2 + 1$ or $1011$ in base 2. The sum of the bits
+      is 3, or 1 (modulo 2) so $t_{11} = 1$.
     </p>
 
     <p>
@@ -122,13 +140,13 @@
       \\ T_4 &= 0110100110010110 \\ ... \end{align} $$
     </p>
 
-    <h3>Z-order curves</h3>
+    <h2>Z-order curves</h2>
 
     <p>
       The trouble with sequences is that they are one-dimensional. Which makes
       them a bit boring to visualise. Is there a way to plot them in two
-      dimensions? In particular, is there a natural way to map the Thue-Morse
-      sequence to the plane?
+      dimensions? In particular, I wondered if there was a natural way to map
+      the Thue-Morse sequence to the plane.
     </p>
 
     <p>
@@ -328,8 +346,8 @@
     <h2>TMZ is a catalog of TM sequences</h2>
 
     <p>
-      We can take this even further! Every row and column is the Thue-Morse
-      sequence or its inverse.
+      We can take this even further. <i>Every</i> row and column is the
+      Thue-Morse sequence or its inverse!
     </p>
 
     <p>
@@ -353,15 +371,15 @@
       Knit the first row as the Thue-Morse sequence for as many stitches as you
       want. Then for each subsequent row, use the Thue-Morse sequence for the
       row number to decide if the row is the same as the previous one or its
-      inverse.
+      inverse, and knit accordingly.
     </p>
 
     <p>
       I have also made an interactive knitting pattern generator available at
       <a href="https://tom-e-white.com/tmz/knitting-rect.html"
         >https://tom-e-white.com/tmz/knitting-rect.html</a
-      >, to make it convenient to select the number of stitches in each square
-      and the size of the pattern.
+      >, to make it convenient to select the the size of the pattern and number
+      of stitches in each square.
     </p>
 
     <h2>The Moser-de Bruijn sequence</h2>
@@ -372,8 +390,8 @@
     </p>
 
     <p>
-      Z-order curves can be defined using the Moser-de Bruijn sequence: 0, 1, 4,
-      5, 16, 17, 20, 21, ...
+      Z-order curves can be defined using something called the Moser-de Bruijn
+      sequence: 0, 1, 4, 5, 16, 17, 20, 21, ...
     </p>
 
     <div id="container-z-curve-6-2"></div>
@@ -485,9 +503,9 @@
       Now consider the parity combinations of $b(i)$ and $b(j)$. If both are
       even then since $2n$ is even $b(i \oplus j)$ is even. If both are odd,
       then $b(i \oplus j)$ is even. And if one is even and the other is odd,
-      then $b(i \oplus j)$ is odd. This is summarised in the table, along with
-      values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b(x)$ is even
-      and 1 if it is odd (since $t_x = b(x) \mod 2$).
+      then $b(i \oplus j)$ is odd. This is summarised in the following table,
+      along with values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b(x)$
+      is even and 1 if it is odd (since $t_x = b(x) \mod 2$).
     </p>
 
     <table>
@@ -546,9 +564,9 @@
     <p>Now we can prove the theorem:</p>
     <p>
       $$ \begin{align*} tmz_{i,j} &= t_{mb_i + 2mb_j} && \text{by definition} \\
-      &= t_{mb_i} \oplus t_{2mb_j} && \text{interleaving} \\ &= t_i \oplus t_j
-      && \text{by identities above} \\ &= t_{i \oplus j} && \text{by the lemma}
-      \end{align*} $$
+      &= t_{mb_i} \oplus t_{2mb_j} && \text{interleaving (see below)} \\ &= t_i
+      \oplus t_j && \text{by identities above} \\ &= t_{i \oplus j} && \text{by
+      the lemma} \end{align*} $$
     </p>
 
     <p>
@@ -568,7 +586,10 @@
       Thue-Morse sequence on a Z-order curve.
     </p>
 
-    <p>See, the Thue-Morse sequence gets everywhere.</p>
+    <p>
+      You see, the Thue-Morse sequence really does turn up in the most
+      unexpected places. And it even makes a nice cushion cover.
+    </p>
 
     <div id="container-tmz"></div>
 
