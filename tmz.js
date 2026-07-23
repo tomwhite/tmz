@@ -104,3 +104,13 @@ function z_curve_path(z, scale) {
   }
   return d;
 }
+
+function z_curve_values(z) {
+  let data = [];
+  for (let i = 0; i <= z; i++) {
+    let x = deinterleave(i);
+    let y = deinterleave(i >> 1);
+    data.push({ x: x, y: y, value: i })
+  }
+  return data;
+}

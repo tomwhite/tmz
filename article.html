@@ -17,14 +17,14 @@
     <script src="tmz.js"></script>
     <script src="article.js"></script>
     <style>
-        table {
+      table {
         border-collapse: collapse;
-        }
-        td,
-        th {
+      }
+      td,
+      th {
         border: 1px solid black;
         padding: 10px 20px;
-        }
+      }
     </style>
   </head>
 
@@ -32,26 +32,83 @@
     <h1>The Thue-Morse sequence and Z-order curves</h1>
 
     <p>
-      This investigation started when I was considering ways of visualising the
-      Thue-Morse sequence, and I asked myself "what pattern do you get if you
-      plot the Thue-Morse sequence on a Z-order curve?"
+      Some things in mathematics seem to appear everywhere. Numbers like $\pi$,
+      e, or the Fibonacci sequence often pop up when you are least expecting
+      them to. Although not quite as ubiquitous, the Thue-Morse sequence is one
+      of those things that once you know about it, seems to appear at every
+      turn.
+    </p>
+    <p>
+      Thue-Morse sequence is an infinite binary sequence, which means it's made
+      up of only zeros and ones. It starts $0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1,
+      ...$ There are many ways to define it, here's one:
+    </p>
+    <p>
+      $t_n$ is the number of bits modulo 2 in $n$, when $n$ is written in base 2
+    </p>
+
+    <table>
+      <tr>
+        <td>$n$</td>
+        <td>0</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+        <td>7</td>
+        <td>8</td>
+        <td>9</td>
+        <td>10</td>
+        <td>11</td>
+      </tr>
+      <tr>
+        <td>$t_n$</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+      </tr>
+    </table>
+    <p>
+      So for example $11 = 8 + 2, 1$ or $1011$ in base 2. The sum of the bits is
+      3, so $t_{11} = 1$.
     </p>
 
     <p>
-      Well, here's the answer to that question.
+      So - a bunch of zeros and ones, but why is this interesting? One
+      application of the sequence is for fair turn taking in games or sports.
+      The player going first (A) often has a slight advantage over the player
+      going second (B), so the obvious alternating order ABAB, which is
+      advantageous for A, can be made fairer by using the order ABBA, which is
+      the first four terms of the Thue-Morse sequence. This scheme is used in
+      tennis tiebreaks, for example.
     </p>
-    <div id="container-tmz"></div>
 
     <p>
-      It turns out that this pattern has several interesting properties, as well
-      as being fun to knit (of which more later).
+      The idea behind turn taking here is that instead of just repeating the
+      pattern AB, we extend the pattern by first "inverting" the original by
+      swapping the players (to get BA), then adding to the original to get ABBA.
     </p>
 
-    <h2>Definitions and terminology</h2>
+    <p>
+      We can keep doing this. So ABBA is inverted to BAAB, and extended to get
+      ABBABAAB.
+    </p>
 
-    <p>Let's start with some definitions and terminology.</p>
-
-    <h3>The Thue-Morse sequence</h3>
+    <p>
+      Formalising this idea gives an alternate definition of the Thue-Morse
+      sequence:
+    </p>
 
     <p>
       Let $T_i$ be the first $2^i$ terms in the Thue-Morse sequence. Then $T_0 =
@@ -61,43 +118,55 @@
     </p>
 
     <p>
-    $$
-    \begin{align}
-    T_0 &= 0 \\
-    T_1 &= 01 \\
-    T_2 &= 0110 \\
-    T_3 &= 01101001 \\
-    T_4 &= 0110100110010110 \\
-    ...
-    \end{align}
-    $$
+      $$ \begin{align} T_0 &= 0 \\ T_1 &= 01 \\ T_2 &= 0110 \\ T_3 &= 01101001
+      \\ T_4 &= 0110100110010110 \\ ... \end{align} $$
     </p>
-
-    <p>There are other ways of defining the same sequence, for example individual terms in the sequence can be defined by via the recurrence relation:</p>
-
-    <p>
-    $$
-    \begin{align}
-    t_0 &= 0\\
-    t_{2n} &= t_n\\
-    t_{2n+1} &= 1- t_n
-    \end{align}
-    $$
-    </p>
-
-    <p>So $t_0 = 0$, $t_1 = 1$, $t_2 = 1$, $t_3 = 0$, $t_4 = 1$, ... </p>
-
-    <p>[TODO: say that TM has *many* interesting properties that we will not look at here. See X and Y]</p>
 
     <h3>Z-order curves</h3>
 
-    <p>A Z-order curve is a space-filling curve, where the Z-value of a point which represents the (integral) distance along the curve is found by interleaving the binary coordinate values of the point.</p>
+    <p>
+      The trouble with sequences is that they are one-dimensional. Which makes
+      them a bit boring to visualise. Is there a way to plot them in two
+      dimensions? In particular, is there a natural way to map the Thue-Morse
+      sequence to the plane?
+    </p>
 
-    <p>Z-order curves can be defined for any number of dimensions, but here we are only concerned with the two dimensional case. This is what the (two-dimensional) curve looks like for Z-values from 0 to 15.</p>
+    <p>
+      There are, of course, many ways to do this. We could traverse the
+      antidiagonals in a square matrix to turn a linear sequence into values
+      filling the upper left triangle in the matrix. Or we could use a spiral
+      path, starting in the centre and looping outwards anticlockwise in
+      alternating horizontal and vertical directions, as made famous in the
+      <a href="https://en.wikipedia.org/wiki/Ulam_spiral">Ulam spiral</a>.
+    </p>
 
-    <div id="container-z-curve"></div>
+    <p>
+      I didn't try these though, as I found that using a Z-order curve had a
+      nice connection with the Thue-Morse sequence.
+    </p>
 
-    <p>[TODO: Need to add the binary break down?]</p>
+    <p>
+      A Z-order curve is a space-filling curve, which can be recursively
+      generated as follows. Z-order curves can be defined for any number of
+      dimensions, but here we are only concerned with the two-dimensional case.
+      Start with a Z shape (numbers indicate the path ordering):
+    </p>
+
+    <div id="container-z-curve-2"></div>
+
+    <p>And repeat this shape in another Z shape.</p>
+
+    <div id="container-z-curve-4"></div>
+
+    <p>And repeat <i>this</i> shape in another Z shape.</p>
+
+    <div id="container-z-curve-6"></div>
+
+    <p>
+      Z-order curves have applications in searching geospatial databases, since
+      they preserve locality well (points nearby on the curve are often nearby
+      in space).
+    </p>
 
     <h2>Combining the Thue-Morse sequence and Z-order curves</h2>
 
@@ -118,23 +187,31 @@
     <p>$T_4 = 0110100110010110$</p>
     <div id="container-T4"></div>
 
-    <p>If $i$ is even then the pattern is a square of side $2^{i/2}$. If $i$ is odd then the pattern is a rectangle with height $2^{(i-1)/2}$ and width $2^{(i+1)/2}$.</p>
+    <p>
+      If $i$ is even then the pattern is a square of side $2^{i/2}$. If $i$ is
+      odd then the pattern is a rectangle with height $2^{(i-1)/2}$ and width
+      $2^{(i+1)/2}$.
+    </p>
 
-    <p>I call this object "TMZ". And $tmz_{i,j}$ is the value at column $i$ and row $j$ in the table (zero-based).</p>
-
-    <p>[TODO: should it be $tmz_{x,y}$ ?]</p>
+    <p>
+      I call this object "TMZ". And $tmz_{i,j}$ is the value at column $i$ and
+      row $j$ in the table (zero-based).
+    </p>
 
     <h2>Recursive Expansion</h2>
 
-    <p>The definition of the Thue-Morse sequence when translated into the Z-order curve view, gives the following way of recursively generating the pattern.</p>
-    
+    <p>
+      The definition of the Thue-Morse sequence when translated into the Z-order
+      curve view, gives the following way of recursively generating the pattern.
+    </p>
+
     <p>Start with a single light cell (0), and proceed in two steps:</p>
 
     <div id="container-T0a"></div>
 
     <p>
-      For the first step, we expand by adding a copy of the pattern to the right,
-      highlighted in red:
+      For the first step, we expand by adding a copy of the pattern to the
+      right, highlighted in red:
     </p>
 
     <div id="container-T1a"></div>
@@ -146,7 +223,8 @@
 
     <div id="container-T1b"></div>
 
-    <p>For the second step, we expand by adding a copy of the pattern below,
+    <p>
+      For the second step, we expand by adding a copy of the pattern below,
       highlighted in red:
     </p>
 
@@ -178,216 +256,333 @@
 
     <h3>And so on...</h3>
 
-    <p>The pattern expands to the right and down in an alternating fashion. At each step
-      the pattern is copied, and inverted.
+    <p>
+      The pattern expands to the right and down in an alternating fashion. At
+      each step the pattern is copied, and inverted. It's like the turn-taking
+      expansion discussed earlier, but in the plane.
     </p>
-
-    <p>[TODO: Does it need Z-order curves? Probably not.]</p>
 
     <h2>TM appears in TMZ</h2>
 
-    <p>So we have generated a pleasing pattern, but what's interesting about it? Look at the top row of the pattern. It's just the Thue-Morse sequence!</p>
+    <p>
+      Now let's examine the pattern a bit more closely. Look at the top row.
+      It's the Thue-Morse sequence!
+    </p>
 
-    <p>For example, for the 8x8 pattern generated by $T_6$, the top row is $T_3 = 01101001$.</p>
+    <p>
+      For example, for the 8x8 pattern generated by $T_6$, the top row is $T_3 =
+      01101001$.
+    </p>
 
     <div id="container-T6-values"></div>
 
     <p>This can be proved by induction.</p>
 
-    <p>Consider the TMZ pattern for a square with side $2^k$. For $k=0$, the table is just a single entry $TMZ=0$, which is the same as the Thue-Morse sequence $T_0=0$.</p>
+    <p>
+      Consider the TMZ pattern for a square with side $2^k$. For $k=0$, the
+      table is just a single entry $TMZ=0$, which is the same as the Thue-Morse
+      sequence $T_0=0$.
+    </p>
 
-    <p>For the inductive step, start with a square with side $2^k$. Because of the way that Z-order curves are constructed, for a square with a side which is a power of two, the curve is continued by a copy of itself to the right, with the last point on the original curve at the bottom right of the square, joined to the first point on the copy at the top left of the new square.</p>
+    <p>
+      For the inductive step, start with a square with side $2^k$. Because of
+      the way that Z-order curves are constructed, for a square with a side
+      which is a power of two, the curve is continued by a copy of itself to the
+      right, with the last point on the original curve at the bottom right of
+      the square, joined to the first point on the copy at the top left of the
+      new square.
+    </p>
 
     <div id="container-T5-z-curve"></div>
 
-    <p>The values in the original square on the left are $T_{2k}$, and because of the way TMZ is constructed, the values in the copy of the square on the right are the negation of $T_{2k}$, or $\overline{T}_{2k}$.</p>
+    <p>
+      The values in the original square on the left are $T_{2k}$, and because of
+      the way TMZ is constructed, the values in the copy of the square on the
+      right are the negation of $T_{2k}$, or $\overline{T}_{2k}$.
+    </p>
 
     <div id="container-T5-values"></div>
 
-    <p>Furthermore, since the Z-curve offsets in the top row of the first square are the same as the Z-curve offsets in the top row of the second square, it follows that the values in the top row of the second square are the negated values of the values in the top row of the first square.</p>
-    
+    <p>
+      Furthermore, since the Z-curve offsets in the top row of the first square
+      are the same as the Z-curve offsets in the top row of the second square,
+      it follows that the values in the top row of the second square are the
+      negated values of the values in the top row of the first square.
+    </p>
+
     <div id="container-T5-top-row"></div>
 
-    <p>But this is just the recursive definition of the Thue-Morse sequence, hence the top row of TMZ is the Thue-Morse sequence. QED</p>
+    <p>
+      But this is just the recursive definition of the Thue-Morse sequence,
+      hence the top row of TMZ is the Thue-Morse sequence. QED
+    </p>
 
-    <p>But that's not all. The first column of the pattern is also the Thue-Morse sequence. The same argument applies, except for the inductive step in this case we copy the half square downwards:</p>
+    <p>
+      But that's not all. The first column of the pattern is also the Thue-Morse
+      sequence. The same argument applies, except for the inductive step in this
+      case we copy the half square downwards:
+    </p>
 
     <div id="container-T6-z-curve"></div>
 
     <h2>TMZ is a catalog of TM sequences</h2>
 
-    <p>It may not be surprising to learn that every row and column is the Thue-Morse sequence or its inverse.</p>
+    <p>
+      We can take this even further! Every row and column is the Thue-Morse
+      sequence or its inverse.
+    </p>
 
-    <p>To show this, first observe that if the starting value in the Thue-Morse definition is 1 then you get the negated sequence. That is, $\overline{T}_0 = 1$ and for $i > 0$, $\overline{T}_{i+1} = \overline{T}_i T_i$</p>
+    <p>
+      This follows from a similar inductive argument, combined with the
+      observation that if the starting value in the Thue-Morse definition is 1
+      then you get the negated sequence. That is, $\overline{T}_0 = 1$ and for
+      $i > 0$, $\overline{T}_{i+1} = \overline{T}_i T_i$
+    </p>
 
-    <p>[TODO: proof by induction again. Going from T2n to T2n+2 produces only two types of row or column.]</p>
+    <p>
+      The fact that every row is either the Thue-Morse sequence or its inverse
+      makes for a knitting pattern that is surprisingly straightforward to knit.
+    </p>
+
+    <img
+      src="images/cushion.jpg"
+      alt="Two knitted Thue-Morse sequences on a Z-order curve"
+    />
+
+    <p>
+      Knit the first row as the Thue-Morse sequence for as many stitches as you
+      want. Then for each subsequent row, use the Thue-Morse sequence for the
+      row number to decide if the row is the same as the previous one or its
+      inverse.
+    </p>
+
+    <p>
+      I have also made an interactive knitting pattern generator available at
+      <a href="https://tom-e-white.com/tmz/knitting-rect.html"
+        >https://tom-e-white.com/tmz/knitting-rect.html</a
+      >, to make it convenient to select the number of stitches in each square
+      and the size of the pattern.
+    </p>
 
     <h2>The Moser-de Bruijn sequence</h2>
 
-    <p>[TODO: here in the paper we shift from a geometric view to an algebraic view.]</p>
-
-    <p>[TODO: define it in the context of Z-order curves, and show identities that follow from the above theorem]</p>
-
-    <p>Theorem: $t_{mb_i} = t_i$</p>
-
-    <p>[TODO: prove this by looking at a Z-order curve]</p>
-
-    <p>Theorem: $t_{2mb_i} = t_i$</p>
-
-    <p>The recurrence relation for the Thue-Morse sequence states that [TODO: ref]</p>
-
-    <p>$$t_{2n} = t_n$$</p>
-
-    <p>Therefore</p>
-
     <p>
-    $$
-    \begin{align}
-    t_{2mb_i} &= t_{mb_i}\\
-    &= t_i
-    \end{align}
-    $$
+      So far the arguments have been very geometric. Switching to a more
+      algebraic viewpoint reveals another way of computing the TMZ pattern.
     </p>
 
-    <p>QED</p>
+    <p>
+      Z-order curves can be defined using the Moser-de Bruijn sequence: 0, 1, 4,
+      5, 16, 17, 20, 21, ...
+    </p>
+
+    <div id="container-z-curve-6-2"></div>
+
+    <p>
+      These are the numbers appearing in the first row of the Z-order curve. If
+      we write them in base 2 we can see the pattern:
+    </p>
+
+    <p>
+      $0_2$, $1_2$, $100_2$, $101_2$, $10000_2$, $10001_2$, $10100_2$,
+      $10101_2$, ...
+    </p>
+
+    <p>
+      They are the numbers whose binary representation only has ones in the even
+      powers of two. For example, $17 = 16 + 1 = 2^4 + 2^0$
+    </p>
+
+    <p>
+      If you double the values in the Moser-de Bruijn sequence, you get 0, 2, 8,
+      10, 32, 34, 40, 42, ... These numbers appear in the first column of the
+      Z-order curve, and their binary representation only has ones in the
+      <i>odd</i> powers of two:
+    </p>
+
+    <p>
+      $0_2$, $10_2$, $1000_2$, $1010_2$, $100000_2$, $100010_2$, $101000_2$,
+      $101010_2$, ...
+    </p>
+
+    <p>
+      These two sequences can be used to decompose any number into its Z-order
+      curve coordinates. Take 27 for example:
+    </p>
+    <p>
+      $$ \begin{align} 27 &= 16 + 8 + 2 + 1\\ &= 2^4 + 2^3 + 2^1 + 2^0\\ &= (2^4
+      + 2^0) + (2^3 + 2^1)\\ &= 17 + 10\\ &= mb_5 + 2mb_3 \end{align} $$
+    </p>
+
+    <p>
+      where $mb_i$ is the $i$th term in the Moser-de Bruijn sequence. So 27
+      appears at coordinates $(5, 3)$ on the Z-order curve.
+    </p>
+
+    <p>
+      Earlier we proved that the top row of TMZ is the Thue-Morse sequence,
+      which we can write like this:
+    </p>
+
+    <p>$t_{mb_i} = t_i$</p>
+
+    <p>
+      Similarly, $t_{2mb_i} = t_i$, which follows because the left column of TMZ
+      is also the Thue-Morse sequence.
+    </p>
 
     <h2>TMZ as an XOR pattern</h2>
 
-    <p>Since the TMZ pattern is the Thue-Morse sequence on a Z-order curve, the Moser-de Bruijn sequence can be used to define TMZ as follows:</p>
+    <p>
+      Since the TMZ pattern is the Thue-Morse sequence on a Z-order curve, the
+      Moser-de Bruijn sequence can be used to define TMZ algebraically:
+    </p>
 
     <p>$$tmz_{i,j} = t_{mb_i + 2mb_j}$$</p>
 
-    <p>We can use this to prove the following theorem, which states that the TMZ pattern at $i$, $j$ is the even parity bit of $i \oplus j$ (where $\oplus$ is the exclusive or operator):</p>
+    <p>
+      We can use this to prove the following theorem, which states that the TMZ
+      pattern at $(i, j)$ is the even parity bit of $i \oplus j$ (where $\oplus$
+      is the exclusive or operator):
+    </p>
 
     <p>Theorem: $$tmz_{i,j} = t_{i \oplus j}$$</p>
 
-    <h3>Proof</h3>
+    <p>First we need a lemma:</p>
 
-    <p>First we need a lemma.</p>
-
-    <p>Lemma: $$t_i \oplus t_j = t_{i \oplus j}$$</p>
-
-    <p>To prove the lemma, consider the number of one bits in $i$ and $j$, and look at the effect of the $\oplus$ operator.</p>
-
-    <p>Call the number of one bits in $i$, $b(i)$. If there are $n$ bits which are both 1s in $i$ and $j$, then</p>
+    <p>$$t_i \oplus t_j = t_{i \oplus j}$$</p>
 
     <p>
-    $$
-    \begin{align}
-    b(i \oplus j) &= b(i) - n + b(j) - n\\
-    &= b(i) + b(j) - 2n
-    \end{align}
-    $$
+      To prove the lemma, consider the number of one bits in $i$ and $j$, and
+      look at the effect of the $\oplus$ operator.
     </p>
 
     <p>
-        Now consider the parity combinations of $b(i)$ and $b(j)$. If both are even then since $2n$ is even $b(i \oplus j)$ is even.
-        If both are odd, then $b(i \oplus j)$ is even. And if one is even and the other is odd, then $b(i \oplus j)$ is odd.
-        This is summarised in the table, along with values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b(x)$ is even and 1 if it is odd (since $t_x = b(x) \mod 2$).
+      Call the number of one bits in $i$, $b(i)$. If there are $n$ bits which
+      are both 1s in $i$ and $j$, then
     </p>
-
-    <table>
-        <tr>
-            <th>$b(i)$</th>
-            <th>$b(j)$</th>
-            <th>$b(i \oplus j)$</th>
-            <th>$t_i$</th>
-            <th>$t_j$</th>
-            <th>$t_{i \oplus j}$</th>
-            <th>$t_i \oplus t_j$</th>
-        </tr>
-        <tr>
-            <td>even</td>
-            <td>even</td>
-            <td>even</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td>even</td>
-            <td>odd</td>
-            <td>odd</td>
-            <td>0</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>odd</td>
-            <td>even</td>
-            <td>odd</td>
-            <td>1</td>
-            <td>0</td>
-            <td>1</td>
-            <td>1</td>
-        </tr>
-        <tr>
-            <td>odd</td>
-            <td>odd</td>
-            <td>even</td>
-            <td>1</td>
-            <td>1</td>
-            <td>0</td>
-            <td>0</td>
-        </tr>
-    </table>
-
-    <p>The final column of the table shows $t_i \oplus t_j$, which is the same as $t_{i \oplus j}$ in each case, which proves the lemma.</p>
-
-    <p>For example, if $i=011_{2}$ and $j=110_{2}$, then there is $n=1$ bit which are both 1s (the second bit), and</p>
 
     <p>
-        $$b(i \oplus j) = b(101_{2}) = 2$$
+      $$ \begin{align} b(i \oplus j) &= b(i) - n + b(j) - n\\ &= b(i) + b(j) -
+      2n \end{align} $$
     </p>
+
+    <p>
+      Illustrating this with an example, if $i=101_{2}$ and $j=011_{2}$, then
+      there is $n=1$ bit which are both 1s (the least significant bit), and
+    </p>
+
+    <p>$$b(i \oplus j) = b(110_{2}) = 2$$</p>
 
     and
 
     <p>
-        $$b(i) - n + b(j) - n = b(011_{2}) - 1 + b(101_{2}) - 1 = 2 - 1 + 2 - 1 = 2$$
+      $$b(i) - n + b(j) - n = b(101_{2}) - 1 + b(011_{2}) - 1 = 2 - 1 + 2 - 1 =
+      2$$
+    </p>
+
+    <p>
+      Now consider the parity combinations of $b(i)$ and $b(j)$. If both are
+      even then since $2n$ is even $b(i \oplus j)$ is even. If both are odd,
+      then $b(i \oplus j)$ is even. And if one is even and the other is odd,
+      then $b(i \oplus j)$ is odd. This is summarised in the table, along with
+      values for $t_i$, $t_j$, $t_{i \oplus j}$ which are 0 if $b(x)$ is even
+      and 1 if it is odd (since $t_x = b(x) \mod 2$).
+    </p>
+
+    <table>
+      <tr>
+        <th>$b(i)$</th>
+        <th>$b(j)$</th>
+        <th>$b(i \oplus j)$</th>
+        <th>$t_i$</th>
+        <th>$t_j$</th>
+        <th>$t_{i \oplus j}$</th>
+        <th>$t_i \oplus t_j$</th>
+      </tr>
+      <tr>
+        <td>even</td>
+        <td>even</td>
+        <td>even</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>even</td>
+        <td>odd</td>
+        <td>odd</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>odd</td>
+        <td>even</td>
+        <td>odd</td>
+        <td>1</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>odd</td>
+        <td>odd</td>
+        <td>even</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+      </tr>
+    </table>
+
+    <p>
+      The final column of the table shows $t_i \oplus t_j$, which is the same as
+      $t_{i \oplus j}$ in each case, which proves the lemma.
     </p>
 
     <p>Now we can prove the theorem:</p>
     <p>
-    $$
-    \begin{align*}
-    tmz_{i,j} &= t_{mb_i + 2mb_j} && \text{by definition} \\
-    &= t_{mb_i} \oplus t_{2mb_j} && \text{interleaving} \\
-    &= t_i \oplus t_j && \text{by above} \\
-    &= t_{i \oplus j} && \text{by the lemma}
-    \end{align*}
-    $$
+      $$ \begin{align*} tmz_{i,j} &= t_{mb_i + 2mb_j} && \text{by definition} \\
+      &= t_{mb_i} \oplus t_{2mb_j} && \text{interleaving} \\ &= t_i \oplus t_j
+      && \text{by identities above} \\ &= t_{i \oplus j} && \text{by the lemma}
+      \end{align*} $$
     </p>
 
     <p>
-        A note on the "interleaving" step. $mb_i$ has ones only in the even binary digits, and $2mb_j$ only in the odd binary digits.
-        Therefore, they can be separated and the Thue-Morse value (viewed as the even parity bit) calculated for each one independently.
-        The two values are then combined using the exclusive or operator to get the same result.
-        [TODO: this explanation could be improved.]
+      A note on the "interleaving" step: $mb_i$ has ones only in the even binary
+      digits, and $2mb_j$ only in the odd binary digits. Therefore, they can be
+      separated and the Thue-Morse value (viewed as the even parity bit)
+      calculated for each one independently. The two values are then combined
+      using the exclusive or operator to get the same result.
     </p>
 
-    <h2>Further consequences</h2>
+    <h2>TMZ and Nim-sum</h2>
 
-    <p>As a result of the theorem, it is easy to see that TMZ has a reflective symmetry along the diagonal, since $t_{i \oplus j}$ is symmetrical in $i$ and $j$.</p>
+    <p>
+      Another name for $i \oplus j$ is Nim-sum, since it is how two Nim heaps
+      can be combined (<a href="https://oeis.org/A003987">A003987</a> in OEIS).
+      So, in conclusion, the even parity bit of Nim-sum is the same as the
+      Thue-Morse sequence on a Z-order curve.
+    </p>
 
-    <p>[TODO: proof showed along the way that $tmz_{i,j} = t_i \oplus t_j$, which means you can XOR a value in the top row with a value in the left col to get the value at the intersection.]</p>
+    <p>See, the Thue-Morse sequence gets everywhere.</p>
 
-    <h2>Knitting</h2>
-
-    <p>[TODO]</p>
+    <div id="container-tmz"></div>
 
     <script type="text/javascript">
-      draw_tmz("tmz", 8);
-
-      draw_z_curve("z-curve", 4);
+      draw_z_curve("z-curve-2", 2);
+      draw_z_curve("z-curve-4", 4);
+      draw_z_curve("z-curve-6", 6);
+      draw_z_curve("z-curve-6-2", 6);
 
       draw_tmz("T0", 0, 0, true, true);
       draw_tmz("T1", 1, 1, true, true);
       draw_tmz("T2", 2, 2, true, true);
       draw_tmz("T3", 3, 3, true, true);
       draw_tmz("T4", 4, 4, true, true);
-
 
       // recursive expansion
       draw_tmz("T0a", 0, 0, true);
@@ -476,6 +671,9 @@
       invert("T6-z-curve", 5);
       highlight_("T6-z-curve", 5);
       highlight_z_connection("T6-z-curve", 7, 3, 0, 4);
+
+      // conclusion
+      draw_tmz("tmz", 10);
     </script>
   </body>
 </html>

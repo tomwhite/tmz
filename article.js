@@ -25,6 +25,18 @@ function draw_z_curve(suffix, i) {
     .attr("stroke-opacity", 0.5)
     .attr("stroke-linejoin", "round")
     .attr("pointer-events", "none");
+  const data = z_curve_values(z);
+  svg
+    .append("g")
+    .attr("font-size", 14)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .selectAll()
+    .data(data)
+    .join("text")
+    .attr("x", (d) => scale * (d.x + 0.5))
+    .attr("y", (d) => scale * (d.y + 0.5))
+    .text((d) => d.value);
 }
 
 function highlight_z_connection(suffix, x0, y0, x1, y1) {
